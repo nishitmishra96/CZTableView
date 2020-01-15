@@ -208,6 +208,7 @@ extension PostController:PostTableViewCellDelegate{
             self.boardPostOriginal = self.boardPostOriginal.filter { (post) -> Bool in
                 return (post.post?.postId != postToShowOnUI[indexPath.row].post?.postId)
             }
+            self.postToShowOnUI = self.boardPostOriginal
             self.tableView?.deleteRows(at: [indexPath], with: .left)
             self.tableView?.endUpdates()
         }else{
