@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="MyriadPro-Regular.otf">
+            <string>MyriadPro-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UploadProgressCell" rowHeight="183" id="KGk-i7-Jjw" customClass="UploadProgressCell" customModule="MentorzPostViewer" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="439" height="183"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="439" height="183"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TVp-Ss-jWi">
+                        <rect key="frame" x="8" y="4" width="423" height="50"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 %" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MXk-ua-Jwv">
+                                <rect key="frame" x="4" y="17" width="24.5" height="16"/>
+                                <fontDescription key="fontDescription" name="MyriadPro-Regular" family="Myriad Pro" pointSize="16"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tYA-NQ-jWQ">
+                                <rect key="frame" x="32.5" y="24" width="352.5" height="2"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="2" id="gEs-bS-YCG"/>
+                                </constraints>
+                            </progressView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lVV-lC-VsC">
+                                <rect key="frame" x="389" y="10" width="30" height="30"/>
+                                <state key="normal" image="close"/>
+                                <connections>
+                                    <action selector="close:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="MAE-IZ-mPE"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="MXk-ua-Jwv" firstAttribute="centerY" secondItem="TVp-Ss-jWi" secondAttribute="centerY" id="57C-xa-FD3"/>
+                            <constraint firstAttribute="height" constant="50" id="Nus-fb-8xl"/>
+                            <constraint firstItem="tYA-NQ-jWQ" firstAttribute="leading" secondItem="MXk-ua-Jwv" secondAttribute="trailing" constant="4" id="Tzv-FS-66R"/>
+                            <constraint firstItem="tYA-NQ-jWQ" firstAttribute="centerY" secondItem="TVp-Ss-jWi" secondAttribute="centerY" id="YbO-vq-fr4"/>
+                            <constraint firstItem="lVV-lC-VsC" firstAttribute="centerY" secondItem="TVp-Ss-jWi" secondAttribute="centerY" id="acH-GE-BbA"/>
+                            <constraint firstAttribute="trailing" secondItem="lVV-lC-VsC" secondAttribute="trailing" constant="4" id="aom-0o-D4e"/>
+                            <constraint firstItem="MXk-ua-Jwv" firstAttribute="leading" secondItem="TVp-Ss-jWi" secondAttribute="leading" constant="4" id="ezy-V9-Vfe"/>
+                            <constraint firstItem="lVV-lC-VsC" firstAttribute="leading" secondItem="tYA-NQ-jWQ" secondAttribute="trailing" constant="4" id="wvu-FD-7wb"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="TVp-Ss-jWi" secondAttribute="trailing" constant="8" id="1MW-Tp-Hom"/>
+                    <constraint firstAttribute="bottom" secondItem="TVp-Ss-jWi" secondAttribute="bottom" constant="4" id="iw2-Lx-dXW"/>
+                    <constraint firstItem="TVp-Ss-jWi" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="kvv-xu-cKu"/>
+                    <constraint firstItem="TVp-Ss-jWi" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="4" id="r41-7o-LSb"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="containerView" destination="TVp-Ss-jWi" id="SEM-NZ-3Sr"/>
+                <outlet property="currentProgress" destination="tYA-NQ-jWQ" id="j2y-7x-SpB"/>
+                <outlet property="percentageCompleted" destination="MXk-ua-Jwv" id="6od-LF-qDr"/>
+                <outlet property="view" destination="H2p-sc-9uM" id="nNg-Ci-RQp"/>
+            </connections>
+            <point key="canvasLocation" x="51.449275362318843" y="98.772321428571431"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="close" width="30" height="30"/>
+    </resources>
+</document>
