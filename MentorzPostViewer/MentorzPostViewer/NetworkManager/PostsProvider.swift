@@ -38,7 +38,6 @@ extension ApiCollection:TargetType{
             return ["Accept":"application/json","Content-Type":"image/\(mime)","user-agent":/MentorzPostViewer.shared.dataSource?.getUserAgent()]
         default: return ["Accept":"application/json","Content-Type":"application/json","user-agent":/MentorzPostViewer.shared.dataSource?.getUserAgent(),"oauth-token":MentorzPostViewer.shared.dataSource?.authToken() ?? ""]
         }
-        
     }
     
     var baseURL: URL {

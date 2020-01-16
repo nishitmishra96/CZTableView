@@ -19,7 +19,9 @@ let RATING_ROUNDUP_MAX_VALUE = 0.7
 protocol PostTableViewCellDelegate{
     func shouldRemoveCell(indexPath:IndexPath)
     func reloadTableView(indexPath:IndexPath)
+    func beginUpdates()
     func updateLayout(indexPath:IndexPath)
+    func endUpdates()
 }
 class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var baseView: UIView!
@@ -116,30 +118,32 @@ class PostTableViewCell: UITableViewCell {
         images.append(thirdStar)
         images.append(fourthStar)
         images.append(fifthStar)
-        self.postText.delegate = self
         profileImage.layer.cornerRadius = 25
         self.mainPostImage.image = UIImage(named:"loading_data_logo")
         self.profileImage.image = UIImage(named: "default_avt_square")
-        self.postText.numberOfLines = 3
+        self.postText.numberOfLines = 2
 //        postText.enabledTypes = [.url]
 //        postText.collapsed = true
-//        postText.collapsedAttributedLink = NSAttributedString(string: "Read More")
+        postText.collapsedAttributedLink = NSAttributedString(string: "Read More")
+        self.postText.delegate = self
+
 //        postText.ellipsis = NSAttributedString(string: "...")
 
     }
     
     override func prepareForReuse() {
-//        profileImage.image = nil
-//        timeOfPost.text = ""
-//        postText.text = nil
-//        name.text = ""
-//        mainPostImage.image = nil
-//        likeCount.text = ""
-//        commentCount.text = ""
-//        shareCount.text = ""
-//        viewCount.text = ""
-        self.profileImage.image = UIImage(named: "default_avt_square")
-        self.mainPostImage.image = UIImage(named:"loading_data_logo")
+        postText.collapsedAttributedLink = NSAttributedString(string: "Read More")
+        timeOfPost.text = ""
+        postText.text = nil
+        postText.numberOfLines = 2
+        name.text = ""
+        mainPostImage.image = nil
+        likeCount.text = ""
+        commentCount.text = ""
+        shareCount.text = ""
+        viewCount.text = ""
+        profileImage.image = UIImage(named: "default_avt_square")
+        mainPostImage.image = UIImage(named:"loading_data_logo")
 //        for rating in 0..<5{
 //           self.images[rating].image = UIImage(named: "unselected_rate")
 //        }
@@ -399,11 +403,15 @@ class PostTableViewCell: UITableViewCell {
 
 extension PostTableViewCell:ExpandableLabelDelegate{
     func willExpandLabel(_ label: ExpandableLabel) {
-        
+//        label.numberOfLines = 2
+        cellDelegate?.beginUpdates()
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        cellDelegate?.updateLayout(indexPath: indexPath)
     }
     
     func didExpandLabel(_ label: ExpandableLabel) {
-        
+        cellDelegate?.endUpdates()
     }
     
     func willCollapseLabel(_ label: ExpandableLabel) {

@@ -21,6 +21,7 @@ import UIKit
 }
 @objc public protocol MentorzUserActivitiesDelegates{
     @objc func profileImageClicked(userId:String!,username:String!)
+    @objc func askShareOnFacebook(postText:String!,url:String!)
 }
 @objc public  class MentorzPostViewer: NSObject {
     @objc public static var shared = MentorzPostViewer()

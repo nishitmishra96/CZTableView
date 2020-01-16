@@ -226,12 +226,13 @@ extension ExpandableLabel {
 extension ExpandableLabel {
     private func commonInit() {
         isUserInteractionEnabled = true
-        lineBreakMode = .byClipping
+//        lineBreakMode = .byClipping
+        lineBreakMode = .byTruncatingTail
         collapsedNumberOfLines = numberOfLines
         expandedAttributedLink = nil
         collapsed = true
-        collapsedAttributedLink = NSAttributedString(string: "More", attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize)])
         ellipsis = NSAttributedString(string: "...")
+//        collapsedAttributedLink = NSAttributedString(string: "More", attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize)])
     }
 
     private func textReplaceWordWithLink(_ lineIndex: LineIndexTuple, text: NSAttributedString, linkName: NSAttributedString) -> NSAttributedString {

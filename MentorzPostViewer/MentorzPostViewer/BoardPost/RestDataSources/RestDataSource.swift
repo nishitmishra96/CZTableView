@@ -21,13 +21,19 @@ class profileDataSource:RestDataSource{
         self.otherUserID = otherUserID
     }
     func getPost(forPage: Int, handler: @escaping (([CompletePost]?, Int) -> ())) {
-        PostsRestManager.shared.getMyPost(userId: /self.userid ,pageNumber:forPage) { (postList, statusCode) -> (Void) in
-        var responseList = [CompletePost]()
-        for post in postList?.posts ?? []{
-            let completepost = CompletePost(post: post)
-            responseList.append(completepost)
-        }
-        handler(responseList,statusCode)
+        if let _ = otherUserID{
+            self.getPostOfOtherUser(forPage: forPage) { (postList, statusCode) in
+                handler(postList,statusCode)
+            }
+        }else{
+            PostsRestManager.shared.getMyPost(userId: /self.userid ,pageNumber:forPage) { (postList, statusCode) -> (Void) in
+            var responseList = [CompletePost]()
+            for post in postList?.posts ?? []{
+                let completepost = CompletePost(post: post)
+                responseList.append(completepost)
+            }
+            handler(responseList,statusCode)
+            }
         }
     }
     func getPostOfOtherUser(forPage: Int, handler: @escaping (([CompletePost]?, Int) -> ())) {

@@ -30,6 +30,7 @@ class CompletePost:NSObject{
         }
     }
     func getURLEmbeddedInPost() -> NSTextCheckingResult?{
+        if /post?.content?.hresId?.count <= 2{
         do{
             let dataDetector = try NSDataDetector.init(types: NSTextCheckingResult.CheckingType.link.rawValue)
             let firstMatch = dataDetector.firstMatch(in: /post?.content?.postText, options: [], range: NSRange(location: 0, length: /post?.content!.postText?.utf16.count))
@@ -37,6 +38,8 @@ class CompletePost:NSObject{
         }
         catch {
             print("No Links")
+        }
+        return nil
         }
         return nil
     }

@@ -17,3 +17,5 @@ enum HttpResponseCodes:Int{
     case NotFound = 404
     case SomethingWentWrong = 700
 }
+
+

@@ -12,6 +12,7 @@ class URLGenerator:NSObject{
     static var shared = URLGenerator()
     var isStaging = false
     
+    var mentorzPostUrl = "https://mentorz.com/stories/"
     var baseUrl : String{
         get{
             if isStaging{

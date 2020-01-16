@@ -11,7 +11,7 @@ import TTTAttributedLabel
 import SDWebImage
 class CommentViewCell: UITableViewCell {
     @IBOutlet weak var userName: UILabel!
-    @IBOutlet weak var commentMessage: TTTAttributedLabel!
+    @IBOutlet weak var commentMessage: UILabel!
     @IBOutlet weak var date: UILabel!
     @IBOutlet weak var deleteButton : UIButton!
     @IBOutlet weak var deleteButtonImage : UIImageView!
@@ -23,6 +23,14 @@ class CommentViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.profileImage.layer.cornerRadius = 25
+    }
+    
+    override func prepareForReuse() {
+        self.userName = nil
+        self.commentMessage.text = ""
+        self.date.text = ""
+        self.profileImage.image = UIImage(named: "default_avt_square")
     }
     
     @IBAction func deleteComment(_ sender: Any) {
@@ -45,14 +53,14 @@ class CommentViewCell: UITableViewCell {
         self.postId = postId
         self.userId = userId
         self.comment = newComment
-        self.userName.text = /comment?.comment?.userName
-        self.commentMessage.text = /comment?.comment?.comment
-        self.setProfileImageWith(urlString:comment?.comment?.lresId)
-        self.date.text = dateTimeUtil.getTimeForComment(forComment: "\(/comment?.comment?.commentTime)")
-        if !(/self.userId?.elementsEqual("\(/comment?.comment?.userId)")) {
-            self.deleteButton.isHidden = true
-            self.deleteButtonImage.isHidden = true
-        }
+//        self.userName.text = /comment?.comment?.userName
+//        self.commentMessage.text = /comment?.comment?.comment
+//        self.setProfileImageWith(urlString:comment?.comment?.lresId)
+//        self.date.text = dateTimeUtil.getTimeForComment(forComment: "\(/comment?.comment?.commentTime)")
+//        if !(/self.userId?.elementsEqual("\(/comment?.comment?.userId)")) {
+//            self.deleteButton.isHidden = true
+//            self.deleteButtonImage.isHidden = true
+//        }
     }
     
     func setProfileImageWith(urlString:String?){

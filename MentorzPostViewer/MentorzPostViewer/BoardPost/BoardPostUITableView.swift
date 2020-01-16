@@ -26,7 +26,7 @@ public class BoardPostUITableView: BaseTableView {
     
     @objc override func didPullToRefresh(){
         self.refreshControl?.beginRefreshing()
-        self.controller?.getPost(forPage: 0)
+        self.reset()
     }
     @objc public func filterLocalPost(string:String){
         self.controller?.filterPostString = string

@@ -31,11 +31,12 @@ open class CommentTableView:PagingTableView {
         self.allowsSelection = false
         self.rowHeight = UITableView.automaticDimension
         self.estimatedRowHeight = UITableView.automaticDimension
+        self.separatorStyle = .none
     }
     
     @objc func didPullToRefresh(){
         self.refreshControl?.beginRefreshing()
-        dataSourceTableView?.getCommentForPost(tableView: self,to: 0)
+        self.pagingDelegate.reset()
     }
 
     
@@ -58,9 +59,9 @@ extension CommentTableView:DataForBoard{
         }
         self.insertRows(at: indexes, with: .none)
         self.endUpdates()
-        self.beginUpdates()
-        self.cellForRow(at: indexes.first ?? IndexPath())?.layoutIfNeeded()
-        self.endUpdates()
+//        self.beginUpdates()
+//        self.cellForRow(at: indexes.first ?? IndexPath())?.layoutIfNeeded()
+//        self.endUpdates()
 
     }
     

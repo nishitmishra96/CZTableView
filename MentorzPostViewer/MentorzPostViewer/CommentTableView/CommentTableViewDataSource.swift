@@ -27,29 +27,24 @@ class CommentTableViewDataSource:NSObject, UITableViewDataSource,UITableViewDele
         self.allComments?.removeAll()
     }
     func getCommentForPost(tableView: PagingTableView? = nil, to pageNumber: Int) {
-        tableView?.isLoading = true
         PostsRestManager.shared.getCommentsforPostId(userId: /self.userId, postId: /self.postId, pageNumber: pageNumber) { (commentList, statusCode) in
-                tableView?.refreshControl?.endRefreshing()
-            if pageNumber == 0 && /self.allComments?.count > 0{
-                    self.allComments?.removeAll()
-                    tableView?.reloadData()
-                    tableView?.reset()
-                }
-            if statusCode == HttpResponseCodes.success.rawValue{
-                    if let listData = commentList{
-                        let oldList = self.allComments
-                        for comment in listData.commentList ?? []{
-                        self.allComments?.append(CompleteComment(comment: comment))
-                        }
-                        self.delegate?.newCommentAppended(oldList: oldList ?? [] , newList: self.allComments ?? [])
-                    }
-                }
-                tableView?.isLoading = false
-            if /self.allComments?.count > 0{
+            if /commentList?.commentList?.count > 0{
                 tableView?.isHidden = false
             }else{
                 tableView?.isHidden = true
             }
+            tableView?.refreshControl?.endRefreshing()
+            if pageNumber == 0 && /self.allComments?.count > 0{
+                    self.allComments?.removeAll()
+                }
+            if statusCode == HttpResponseCodes.success.rawValue{
+                    if let listData = commentList{
+                        for comment in listData.commentList ?? []{
+                        self.allComments?.append(CompleteComment(comment: comment))
+                        }
+                    }
+                }
+                tableView?.isLoading = false
             }
     }
     
@@ -72,11 +67,11 @@ class CommentTableViewDataSource:NSObject, UITableViewDataSource,UITableViewDele
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-
 }
 
 extension CommentTableViewDataSource:PagingTableViewDelegate{
     func paginate(_ tableView: PagingTableView, to page: Int) {
+        tableView.isLoading = true
         self.getCommentForPost(tableView: tableView, to: page)
     }
 }
