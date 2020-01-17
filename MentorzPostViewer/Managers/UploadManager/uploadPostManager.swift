@@ -45,6 +45,10 @@ public class UploadPostManager:NSObject{
     }
     
     func uploadImagePost(imageName:String,imageDataToBeUploaded:Data,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        if imageName == "" || imageDataToBeUploaded == nil || mimeType == "" || descriptionFieldText == "" {
+            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+            return
+        }
         PostsRestManager.shared.uploadSessionURI(name: imageName, mime: mimeType) { (googleUrl, statusCode) in
             if /googleUrl != ""{
                 self.request = Alamofire.upload(imageDataToBeUploaded, to: /googleUrl, method: .put, headers: nil)
@@ -65,13 +69,18 @@ public class UploadPostManager:NSObject{
                                 newPost.contents = []
                                 newPost.contents?.append(content)
                                 PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
-                                    self.getUploadedPost(postId: "\(/newPost?.postId)") { (newUploadedPost,statusCode) in
-                                        if statusCode == HttpResponseCodes.success.rawValue{
-                                            handler(newUploadedPost,statusCode)
-                                        }else{
-                                            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                                    if let _ = newPost{
+                                        self.getUploadedPost(postId: "\(/newPost?.postId)") { (newUploadedPost,statusCode) in
+                                            if statusCode == HttpResponseCodes.success.rawValue{
+                                                handler(newUploadedPost,statusCode)
+                                            }else{
+                                                handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                                            }
                                         }
+                                    }else{
+                                        handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
                                     }
+                                    
                                 }
                             }
                         }
@@ -81,11 +90,15 @@ public class UploadPostManager:NSObject{
                 }
                 
             }else{
-            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+            }
         }
     }
-    }
     func uploadVideoPost(videoName:String,videoFileURL:NSURL?,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        if videoName == "" || videoFileURL?.absoluteString == "" || mimeType == "" || descriptionFieldText == "" {
+            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+            return
+        }
         PostsRestManager.shared.uploadSessionURI(name: videoName, mime: mimeType) { (googleUrl, statusCode) in
             if googleUrl != ""{
                 if let _ = videoFileURL{
@@ -99,30 +112,16 @@ public class UploadPostManager:NSObject{
                             print("response from upload image \(response)");
                             if response.response?.statusCode == HttpResponseCodes.success.rawValue{
                                 PostsRestManager.shared.getSignedURL(name: videoName) { (url, statusCode) in
-                                    let content = ContentToUplaod()
-                                    content.mediaType = "VIDEO"
-                                    content.lresId = url
-                                    content.hresId = url
-                                    content.descriptionField = descriptionFieldText
-                                    let newPost = NewPost()
-                                    newPost.contents = []
-                                    newPost.contents?.append(content)
-//                                    PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
-                                        
-                                        var mimeTypeOfImage = ""
-                                        var imageNameFromVideo = "png"
-                                        var imageDataToBeUploaded = Data()
-                                        if let image = (videoFileURL as? URL){
-                                            imageNameFromVideo = image.lastPathComponent + "THUMB"
-                                        }
-                                        let selectedImage = self.getVideoThumbnail(filePathLocal: /videoFileURL?.absoluteString)
-                                        imageDataToBeUploaded = (selectedImage!).pngData()!
+                                    if statusCode == HttpResponseCodes.success.rawValue{
                                         self.uploadThumbnail(videoFileUrl: videoFileURL as! URL, uploadedVideoUrl: /url, postText: descriptionFieldText) { (newPost, statusCode) in
                                             self.getUploadedPost(postId: "\(/newPost?.postId)") { (newpost, statusCode) in
                                                 handler(newpost,statusCode)
                                             }
                                         }
-//                                    }
+                                    }else{
+                                        handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                                    }
+                                    
                                 }
                             }else{
                                 handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
@@ -130,10 +129,14 @@ public class UploadPostManager:NSObject{
                     }
                 }
             }else{
-            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
-        }
+                handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+            }
         }}
     func uploadTextPost(descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        if descriptionFieldText == ""{
+            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+            return
+        }
         let content = ContentToUplaod()
         content.mediaType = "TEXT"
         content.lresId = ""
@@ -187,7 +190,7 @@ public class UploadPostManager:NSObject{
                                 newPost.contents?.append(content)
                                 PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
                                     if let _ = newPost{
-                                    handler(newPost,statusCode)
+                                        handler(newPost,statusCode)
                                     }else{
                                         handler(nil,statusCode)
                                     }
