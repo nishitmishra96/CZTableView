@@ -16,7 +16,7 @@ public class UploadPostManager:NSObject{
     var request:UploadRequest?
     var delegate:UploadPostProgressDelegate?
     var uploadCompleted: (()->())?
-    
+    var videoURL:String?
     func getUploadedPost(postId:String,handler:@escaping ((Post?,Int)->())){
         PostsRestManager.shared.getPostByPostId(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), postId: postId) { (post, statusCode) in
             if let uploadedPost = post{
@@ -46,8 +46,8 @@ public class UploadPostManager:NSObject{
     
     func uploadImagePost(imageName:String,imageDataToBeUploaded:Data,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
         PostsRestManager.shared.uploadSessionURI(name: imageName, mime: mimeType) { (googleUrl, statusCode) in
-            if let url = googleUrl{
-                self.request = Alamofire.upload(imageDataToBeUploaded, to: url, method: .put, headers: nil)
+            if /googleUrl != ""{
+                self.request = Alamofire.upload(imageDataToBeUploaded, to: /googleUrl, method: .put, headers: nil)
                     .uploadProgress(closure: { (progress) in
                         print("print progress \(progress.fractionCompleted)");
                         self.delegate?.progressChangedwith(value: Float(progress.fractionCompleted))
@@ -66,7 +66,6 @@ public class UploadPostManager:NSObject{
                                 newPost.contents?.append(content)
                                 PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
                                     self.getUploadedPost(postId: "\(/newPost?.postId)") { (newUploadedPost,statusCode) in
-                                        self.uploadCompleted?()
                                         if statusCode == HttpResponseCodes.success.rawValue{
                                             handler(newUploadedPost,statusCode)
                                         }else{
@@ -75,19 +74,22 @@ public class UploadPostManager:NSObject{
                                     }
                                 }
                             }
-                        }else{
+                        }
+                        else{
                             handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
                         }
                 }
                 
-            }
+            }else{
+            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
         }
     }
-    func uploadVideoPost(imageName:String,videoFileURL:NSURL?,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
-        PostsRestManager.shared.uploadSessionURI(name: imageName, mime: mimeType) { (googleUrl, statusCode) in
-            if let url = googleUrl{
+    }
+    func uploadVideoPost(videoName:String,videoFileURL:NSURL?,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        PostsRestManager.shared.uploadSessionURI(name: videoName, mime: mimeType) { (googleUrl, statusCode) in
+            if googleUrl != ""{
                 if let _ = videoFileURL{
-                    self.request = Alamofire.upload(videoFileURL as! URL, to: url)
+                    self.request = Alamofire.upload(videoFileURL as! URL, to: /googleUrl)
                         .uploadProgress(closure: { (progress) in
                             print("print progress \(progress.fractionCompleted)");
                             self.delegate?.progressChangedwith(value: Float(progress.fractionCompleted))
@@ -95,8 +97,8 @@ public class UploadPostManager:NSObject{
                         })
                         .responseJSON { (response) in
                             print("response from upload image \(response)");
-                            if response.response?.statusCode == 200{
-                                PostsRestManager.shared.getSignedURL(name: imageName) { (url, statusCode) in
+                            if response.response?.statusCode == HttpResponseCodes.success.rawValue{
+                                PostsRestManager.shared.getSignedURL(name: videoName) { (url, statusCode) in
                                     let content = ContentToUplaod()
                                     content.mediaType = "VIDEO"
                                     content.lresId = url
@@ -105,39 +107,32 @@ public class UploadPostManager:NSObject{
                                     let newPost = NewPost()
                                     newPost.contents = []
                                     newPost.contents?.append(content)
-                                    PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
+//                                    PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
+                                        
                                         var mimeTypeOfImage = ""
-                                        var imageNameFromVideo = ""
+                                        var imageNameFromVideo = "png"
                                         var imageDataToBeUploaded = Data()
                                         if let image = (videoFileURL as? URL){
-                                            mimeTypeOfImage = image.pathExtension.lowercased()
                                             imageNameFromVideo = image.lastPathComponent + "THUMB"
                                         }
-                                        var selectedImage = self.getVideoThumbnail(filePathLocal: /videoFileURL?.absoluteString)
-                                        if /mimeType == "png" {
-                                            imageDataToBeUploaded = (selectedImage!).pngData()!;
-                                        } else {
-                                            imageDataToBeUploaded = (selectedImage!).jpegData(compressionQuality: 1)!;
-                                        }
-                                        self.uploadImagePost(imageName: imageNameFromVideo, imageDataToBeUploaded: imageDataToBeUploaded, mimeType: mimeTypeOfImage, descriptionFieldText: descriptionFieldText) { (newUploadedPost, statusCode) in
-                                            self.uploadCompleted?()
-                                            if statusCode == HttpResponseCodes.success.rawValue{
-                                                handler(newUploadedPost,statusCode)
-                                            }else{
-                                                handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                                        let selectedImage = self.getVideoThumbnail(filePathLocal: /videoFileURL?.absoluteString)
+                                        imageDataToBeUploaded = (selectedImage!).pngData()!
+                                        self.uploadThumbnail(videoFileUrl: videoFileURL as! URL, uploadedVideoUrl: /url, postText: descriptionFieldText) { (newPost, statusCode) in
+                                            self.getUploadedPost(postId: "\(/newPost?.postId)") { (newpost, statusCode) in
+                                                handler(newpost,statusCode)
                                             }
                                         }
-                                        print("post Sucessfully uploaded")
-                                    }
+//                                    }
                                 }
                             }else{
                                 handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
                             }
                     }
                 }
-            }
+            }else{
+            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
         }
-    }
+        }}
     func uploadTextPost(descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
         let content = ContentToUplaod()
         content.mediaType = "TEXT"
@@ -150,10 +145,57 @@ public class UploadPostManager:NSObject{
         PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
             self.delegate?.progressChangedwith(value: 1.0)
             self.getUploadedPost(postId: "\(/newPost?.postId)") { (newUploadedPost,statusCode) in
-                self.uploadCompleted?()
                 if statusCode == HttpResponseCodes.success.rawValue{
                     handler(newUploadedPost,statusCode)
                 }else{ handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                }
+            }
+        }
+    }
+    
+    func uploadThumbnail(videoFileUrl : URL,uploadedVideoUrl: String,postText:String?,handler:@escaping ((Post?,Int)->())){
+        let mimeType = "png"
+        var selectedImage : UIImage?
+        var imageName : String?
+        var imageDataToBeUploaded : Data?
+        selectedImage = self.getVideoThumbnail(filePathLocal: videoFileUrl.absoluteString)
+        if let image = (videoFileUrl as? URL){
+            imageName = image.lastPathComponent + "THUMB"
+        }
+        if mimeType == "png" {
+            imageDataToBeUploaded = (selectedImage!).pngData()!;
+        } else {
+            imageDataToBeUploaded = (selectedImage!).jpegData(compressionQuality: 1)!;
+        }
+        PostsRestManager.shared.uploadSessionURI(name: /imageName, mime: /mimeType) { (googleUrl, statusCode) in
+            if let url = googleUrl{
+                self.request = Alamofire.upload(imageDataToBeUploaded!, to: url, method: .put, headers: nil)
+                    .uploadProgress(closure: { (progress) in
+                        print("print progress \(progress.fractionCompleted)");
+                    })
+                    .responseJSON { (response) in
+                        print("response from upload image \(response)");
+                        if response.response?.statusCode == 200{
+                            PostsRestManager.shared.getSignedURL(name: /imageName) { (url, statusCode) in
+                                let content = ContentToUplaod()
+                                content.mediaType = "VIDEO"
+                                content.lresId = url
+                                content.hresId = uploadedVideoUrl
+                                content.descriptionField = /postText
+                                let newPost = NewPost()
+                                newPost.contents = []
+                                newPost.contents?.append(content)
+                                PostsRestManager.shared.uploadPostToMentorzServer(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), newPost: newPost) { (newPost, statusCode) in
+                                    if let _ = newPost{
+                                    handler(newPost,statusCode)
+                                    }else{
+                                        handler(nil,statusCode)
+                                    }
+                                }
+                            }
+                        }else{
+                            handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
+                        }
                 }
             }
         }

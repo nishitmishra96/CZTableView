@@ -28,6 +28,7 @@
 		9452B84823B61F7500855B15 /* UploadPostPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9452B84723B61F7500855B15 /* UploadPostPopupVC.swift */; };
 		945549382399AB46002F755F /* UIlabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945549372399AB46002F755F /* UIlabel.swift */; };
 		9456816423CAF9DC00258B61 /* uploadPostManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9456816323CAF9DC00258B61 /* uploadPostManager.swift */; };
+		94574F7F23D1D6FC001E6E0D /* PostUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94574F7E23D1D6FC001E6E0D /* PostUploader.swift */; };
 		94592F7E2382BD5300B42A50 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 943417CA237D864F00865442 /* PostTableViewCell.xib */; };
 		9459F766239A32E000F5C1CB /* CompleteComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9459F765239A32E000F5C1CB /* CompleteComment.swift */; };
 		945B183D23C448D80051A97B /* UploadProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945B183B23C448D80051A97B /* UploadProgressCell.swift */; };
@@ -102,6 +103,7 @@
 		9452B84723B61F7500855B15 /* UploadPostPopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostPopupVC.swift; sourceTree = "<group>"; };
 		945549372399AB46002F755F /* UIlabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIlabel.swift; sourceTree = "<group>"; };
 		9456816323CAF9DC00258B61 /* uploadPostManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = uploadPostManager.swift; sourceTree = "<group>"; };
+		94574F7E23D1D6FC001E6E0D /* PostUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostUploader.swift; sourceTree = "<group>"; };
 		9459F765239A32E000F5C1CB /* CompleteComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteComment.swift; sourceTree = "<group>"; };
 		945B183B23C448D80051A97B /* UploadProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProgressCell.swift; sourceTree = "<group>"; };
 		945B183C23C448D80051A97B /* UploadProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadProgressCell.xib; sourceTree = "<group>"; };
@@ -205,12 +207,22 @@
 			path = CommentTableView;
 			sourceTree = "<group>";
 		};
-		9456816223CAF9B500258B61 /* UploadPostManager */ = {
+		94574F7C23D1D6BC001E6E0D /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				94574F7D23D1D6CE001E6E0D /* UploadManager */,
+				94DF444B238CEBBE00A896E1 /* NetworkManager */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		94574F7D23D1D6CE001E6E0D /* UploadManager */ = {
 			isa = PBXGroup;
 			children = (
 				9456816323CAF9DC00258B61 /* uploadPostManager.swift */,
+				94574F7E23D1D6FC001E6E0D /* PostUploader.swift */,
 			);
-			path = UploadPostManager;
+			path = UploadManager;
 			sourceTree = "<group>";
 		};
 		948FC7862387D40F001EA102 /* Utilities */ = {
@@ -240,7 +252,6 @@
 		94A19200237D6B5E001CB7A8 /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
-				9456816223CAF9B500258B61 /* UploadPostManager */,
 				94A19203237D6C06001CB7A8 /* PostTableViewCell.swift */,
 				9452B84723B61F7500855B15 /* UploadPostPopupVC.swift */,
 				943417CA237D864F00865442 /* PostTableViewCell.xib */,
@@ -267,6 +278,7 @@
 		94B2E799237AEDF800FF797B = {
 			isa = PBXGroup;
 			children = (
+				94574F7C23D1D6BC001E6E0D /* Managers */,
 				94B2E7A5237AEDF800FF797B /* MentorzPostViewer */,
 				94B2E7B0237AEDF800FF797B /* MentorzPostViewerTests */,
 				94B2E7A4237AEDF800FF797B /* Products */,
@@ -293,7 +305,6 @@
 				94F6439E2393004F005E7976 /* Assets.xcassets */,
 				94F643AA2393FF90005E7976 /* Prefix.swift */,
 				940AB3D2238FA34900EBADC4 /* BaseTableView */,
-				94DF444B238CEBBE00A896E1 /* NetworkManager */,
 				94DF4444238CE89300A896E1 /* Models */,
 				948FC7892387D440001EA102 /* Extension */,
 				948FC7862387D40F001EA102 /* Utilities */,
@@ -539,6 +550,7 @@
 				9456816423CAF9DC00258B61 /* uploadPostManager.swift in Sources */,
 				94DF444F238CF05600A896E1 /* PostsProvider.swift in Sources */,
 				94505A2023C497E2009D8CE3 /* MulticastDelegate.swift in Sources */,
+				94574F7F23D1D6FC001E6E0D /* PostUploader.swift in Sources */,
 				942F367323977A2A006B5350 /* ProfileImage.swift in Sources */,
 				94DF4446238CE8AD00A896E1 /* PostList.swift in Sources */,
 				942F36832397E5BD006B5350 /* Comment.swift in Sources */,

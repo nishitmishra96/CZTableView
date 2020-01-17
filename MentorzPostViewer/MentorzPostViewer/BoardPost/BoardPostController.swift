@@ -120,7 +120,7 @@ class PostController: NSObject,RegularPostController {
         return cell
     }
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if UploadPostManager.shared.request == nil && indexPath.section == 1{
+//        if UploadPostManager.shared.request == nil && indexPath.section == 1{
             PostsRestManager.shared.updatePostViewCount(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), postId: "\(String(describing: /self.postToShowOnUI[indexPath.row].post?.postId))") { (statusCode) in
                 if statusCode == HttpResponseCodes.NotFound.rawValue{
                     self.postToShowOnUI[indexPath.row].post?.viewCount = (self.postToShowOnUI[indexPath.row].post?.viewCount ?? 0) + 1
@@ -130,7 +130,7 @@ class PostController: NSObject,RegularPostController {
                     print("view count not increased")
                 }
             }
-        }
+//        }
     }
     public func paginate(_ tableView: PagingTableView, to page: Int) {
         self.tableView?.isLoading = true
@@ -167,10 +167,9 @@ extension PostController{
             self.tableView?.isLoading = false
             (self.tableView as? BoardPostUITableView)?.statusCodeDelegate?.didReceiveForTableViewData(with: statusCode)
             if self.boardPostOriginal.count == 0{
-                (self.tableView as? BoardPostUITableView)?.label?.isHidden = false
+                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = false
             }else{
-                (self.tableView as? BoardPostUITableView)?.label?.isHidden = true
-                
+                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = true
             }
         })
     }
@@ -196,9 +195,9 @@ extension PostController{
             self.tableView?.isLoading = false
             self.tableView?.reloadData()
             if self.boardPostOriginal.count == 0{
-                (self.tableView as? BoardPostUITableView)?.label?.isHidden = false
+                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = false
             }else{
-                (self.tableView as? BoardPostUITableView)?.label?.isHidden = true
+                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = true
                 
             }
         })

@@ -19,9 +19,11 @@ import UIKit
     @objc func getUserAgent()->String
     @objc func getEnvironmentStatus()->Bool
 }
+
 @objc public protocol MentorzUserActivitiesDelegates{
     @objc func profileImageClicked(userId:String!,username:String!)
     @objc func askShareOnFacebook(postText:String!,url:String!)
+    @objc func trackShareEvent(pstId:String,withActivityType:String)
 }
 @objc public  class MentorzPostViewer: NSObject {
     @objc public static var shared = MentorzPostViewer()

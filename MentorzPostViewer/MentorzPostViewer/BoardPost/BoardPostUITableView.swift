@@ -8,20 +8,22 @@
 
 import UIKit
 import Alamofire
+
 @objc public protocol BoardPostStatusCodeDelegates{
     @objc func didReceiveForTableViewData(with statusCode:Int)
 }
 public class BoardPostUITableView: BaseTableView {
     var controller:PostController?
-    var label:UILabel?
+    var errorLabel:UILabel?
+    
     @objc open var statusCodeDelegate:BoardPostStatusCodeDelegates?
     open override func awakeFromNib() {
         super.awakeFromNib()
-        label = UILabel(frame: CGRect(x: self.frame.width/4, y: self.frame.midY, width: self.frame.width - 32, height: 50))
-        label?.text = "No Content Available"
-        label?.font = UIFont.init(name: "Helvetica Neue", size: 22.0)
-        self.addSubview(label!)
-        label?.isHidden = true
+        errorLabel = UILabel(frame: CGRect(x: self.frame.width/4, y: self.frame.midY, width: self.frame.width - 32, height: 50))
+        errorLabel?.text = "No Content Available"
+        errorLabel?.font = UIFont.init(name: "Helvetica Neue", size: 22.0)
+        self.addSubview(errorLabel!)
+        errorLabel?.isHidden = true
     }
     
     @objc override func didPullToRefresh(){
@@ -69,17 +71,14 @@ public class BoardPostUITableView: BaseTableView {
             }
         }else{
             let imageURL = info[.imageURL]
-            var imageName = ""
+            var imageName = ("\((Date().timeIntervalSince1970 * 1000))").replacingOccurrences(of: ".", with: "")
             var mimeType = ""
             var imageDataToBeUploaded = Data()
-            if let asset = info[.phAsset]{
-                imageName = ("\((Date().timeIntervalSince1970 * 1000))").replacingOccurrences(of: ".", with: "")
-            }
-            
+
             if let image = (imageURL as? URL){
                 mimeType = image.pathExtension.lowercased()
             }
-            
+
             if mimeType == "png" {
                 imageDataToBeUploaded = (selectedImage?.pngData()!)!;
             } else {
@@ -87,54 +86,74 @@ public class BoardPostUITableView: BaseTableView {
             }
             if !isVideo{
                 UploadPostManager.shared.uploadImagePost(imageName: imageName, imageDataToBeUploaded: imageDataToBeUploaded, mimeType: mimeType, descriptionFieldText: /descriptionText) { (newPost, statusCode) in
+                    
                     UploadPostManager.shared.request = nil
+                    UploadPostManager.shared.uploadCompleted?()
                     if statusCode == HttpResponseCodes.success.rawValue{
                         if let newPostToShow = newPost{
                             self.controller?.InsertNewRow(withPost:newPostToShow)
+                            print("post Sucessfully uploaded")
+
                         }else{
                             MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
                         }
                     }
                 }
             }else{
-                UploadPostManager.shared.uploadVideoPost(imageName: imageName, videoFileURL: videoFileUrl, mimeType: mimeType, descriptionFieldText: descriptionText) { (newPost, statusCode) in
-                    UploadPostManager.shared.request = nil
-                    if statusCode == HttpResponseCodes.success.rawValue{
-                        if let newPostToShow = newPost{
-                            self.controller?.InsertNewRow(withPost:newPostToShow)
-                        }else{
-                            MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
+                if /videoFileUrl?.lastPathComponent != ""{
+                    imageName = imageName + "." + /videoFileUrl?.pathExtension?.lowercased()
+                    UploadPostManager.shared.uploadVideoPost(videoName: imageName, videoFileURL: videoFileUrl, mimeType:  /videoFileUrl?.pathExtension, descriptionFieldText: descriptionText) { (newPost, statusCode) in
+                        UploadPostManager.shared.request = nil
+                        UploadPostManager.shared.uploadCompleted?()
+                        if statusCode == HttpResponseCodes.success.rawValue{
+                            if let newPostToShow = newPost{
+                                self.controller?.InsertNewRow(withPost:newPostToShow)
+                                print("post Sucessfully uploaded")
+
+                            }else{
+                                MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
+                            }
                         }
                     }
                 }
             }
         }
-        
+
     }
     @objc public func addPostbuttonClicked() {
-        let uploadPostVC = Storyboard.home.instanceOf(viewController: UploadPostPopupVC.self)!
-        let uploadPopUp = UIAlertController(title: "Add Post", message: "", preferredStyle: .alert)
-        let uploadAction = UIAlertAction(title: "Upload", style: .default) { (uploadAction) in
-            if !uploadPostVC.isText{
-                self.uploadPostPopup(info: [:], descriptionText: /uploadPostVC.descriptionField.text, selectedImage: nil, isVideo: false, videoFileUrl: nil, isText: true)
-            }else if !uploadPostVC.isVideo{
-                self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image)
-            }else{
-                self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image, isVideo: uploadPostVC.isVideo, videoFileUrl: (uploadPostVC.info[UIImagePickerController.InfoKey.mediaURL] as! NSURL))
+        if UploadPostManager.shared.request != nil{
+            let uploadPopUp = UIAlertController(title: "Alert", message: "Wait or cancel current uploading to add a new post.", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Dismiss", style: .destructive){ _ in
             }
+            uploadPopUp.addAction(cancelAction)
+            uploadPopUp.modalPresentationStyle = .overFullScreen
+            UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
+        }else{
+            let uploadPostVC = Storyboard.home.instanceOf(viewController: UploadPostPopupVC.self)!
+            let uploadPopUp = UIAlertController(title: "Add Post", message: "", preferredStyle: .alert)
+            let uploadAction = UIAlertAction(title: "Publish", style: .default) { (uploadAction) in
+                if !uploadPostVC.isText{
+                    self.uploadPostPopup(info: [:], descriptionText: /uploadPostVC.descriptionField.text, selectedImage: nil, isVideo: false, videoFileUrl: nil, isText: true)
+                }else if !uploadPostVC.isVideo{
+                    self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image)
+                }else{
+                    self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image, isVideo: uploadPostVC.isVideo, videoFileUrl: (uploadPostVC.info[UIImagePickerController.InfoKey.mediaURL] as! NSURL))
+                }
+            }
+            uploadAction.isEnabled = false
+            uploadPostVC.uploadAction = uploadAction
+            let cancelAction = UIAlertAction(title: "Cancel", style: .destructive){ _ in
+
+            }
+            uploadPopUp.addAction(uploadAction)
+            uploadPopUp.addAction(cancelAction)
+            uploadPopUp.preferredContentSize = UIApplication.shared.keyWindow?.frame.offsetBy(dx: 50, dy: 50).size ?? CGSize.zero
+            uploadPopUp.setValue(uploadPostVC, forKey: "contentViewController")
+            let height:NSLayoutConstraint = NSLayoutConstraint(item: uploadPopUp.view!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 300)
+            uploadPopUp.view.addConstraint(height)
+            uploadPopUp.modalPresentationStyle = .overFullScreen
+            UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
         }
-        uploadAction.isEnabled = false
-        uploadPostVC.uploadAction = uploadAction
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive){ _ in
-            
-        }
-        uploadPopUp.addAction(uploadAction)
-        uploadPopUp.addAction(cancelAction)
-        uploadPopUp.preferredContentSize = UIApplication.shared.keyWindow?.frame.offsetBy(dx: 50, dy: 50).size ?? CGSize.zero
-        uploadPopUp.setValue(uploadPostVC, forKey: "contentViewController")
-        let height:NSLayoutConstraint = NSLayoutConstraint(item: uploadPopUp.view!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 300)
-        uploadPopUp.view.addConstraint(height)
-        uploadPopUp.modalPresentationStyle = .overFullScreen
-        UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
+
     }
 }

@@ -393,7 +393,10 @@ class PostTableViewCell: UITableViewCell {
                 // User canceled
                 return
             }else{
-                print("SHared")
+                MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
+                    PostsRestManager.shared.sharePost(postId: "\(/self.completePost?.post?.postId)") { (statusCode) in
+                        MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
+                }
             }
         }
         UIApplication.shared.keyWindow?.rootViewController?.present(controller, animated: true, completion: nil)

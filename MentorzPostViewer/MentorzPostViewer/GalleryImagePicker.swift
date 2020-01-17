@@ -39,7 +39,7 @@ class GalleryImagePicker:NSObject{
             imagePickerController.sourceType = .camera
         }else{
             imagePickerController.sourceType = .photoLibrary
-
+            imagePickerController.videoMaximumDuration = 60
         }
         imagePickerController.allowsEditing = true
         imagePickerController.mediaTypes = [kUTTypeMovie as String,kUTTypeImage as String]
