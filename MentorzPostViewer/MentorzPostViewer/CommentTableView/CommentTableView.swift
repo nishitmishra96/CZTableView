@@ -26,17 +26,10 @@ open class CommentTableView:PagingTableView {
     }
     func setUp(){
         self.register(UINib.init(nibName: "CommentViewCell", bundle: Bundle.init(identifier: "com.craterzone.MentorzPostViewer")), forCellReuseIdentifier: "CommentViewCell")
-        self.refreshControl = UIRefreshControl()
-        self.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         self.allowsSelection = false
         self.rowHeight = UITableView.automaticDimension
         self.estimatedRowHeight = UITableView.automaticDimension
         self.separatorStyle = .none
-    }
-    
-    @objc func didPullToRefresh(){
-        self.refreshControl?.beginRefreshing()
-        self.pagingDelegate.reset()
     }
 
     

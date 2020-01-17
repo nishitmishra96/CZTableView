@@ -27,7 +27,7 @@ class CommentViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        self.userName = nil
+        self.userName.text = ""
         self.commentMessage.text = ""
         self.date.text = ""
         self.profileImage.image = UIImage(named: "default_avt_square")
@@ -53,21 +53,19 @@ class CommentViewCell: UITableViewCell {
         self.postId = postId
         self.userId = userId
         self.comment = newComment
-//        self.userName.text = /comment?.comment?.userName
-//        self.commentMessage.text = /comment?.comment?.comment
-//        self.setProfileImageWith(urlString:comment?.comment?.lresId)
-//        self.date.text = dateTimeUtil.getTimeForComment(forComment: "\(/comment?.comment?.commentTime)")
-//        if !(/self.userId?.elementsEqual("\(/comment?.comment?.userId)")) {
-//            self.deleteButton.isHidden = true
-//            self.deleteButtonImage.isHidden = true
-//        }
+        self.userName.text = comment?.comment?.fullName
+        self.commentMessage.text = /comment?.comment?.comment
+        self.setProfileImageWith(urlString:comment?.comment?.lresId)
+        self.date.text = dateTimeUtil.getTimeForComment(forComment: "\(/comment?.comment?.commentTime)")
+        if !(/self.userId?.elementsEqual("\(/comment?.comment?.userId)")) {
+            self.deleteButton.isHidden = true
+            self.deleteButtonImage.isHidden = true
+        }
     }
     
     func setProfileImageWith(urlString:String?){
         if let url = urlString{
-            self.profileImage.sd_setImage(with: URL(string: url)) { (image, error, cache, url) in
-                self.profileImage.image = image
-            }
+            self.profileImage.sd_setImage(with: URL(string: urlString!), placeholderImage: UIImage(named:"default_avt_square"), options: .allowInvalidSSLCertificates, context: [:])
         }else{
             self.profileImage.image = UIImage(named:"default_avt_square")
         }

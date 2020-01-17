@@ -22,7 +22,11 @@ public class Comment : NSObject, Mappable{
     var userId : Int?
     @UTFEncodeAndDecode var userName : String?
 
-
+    var fullName : String{
+        get{
+            return /name + " " + /lastName
+        }
+    }
     override init() {
         super.init()
     }
