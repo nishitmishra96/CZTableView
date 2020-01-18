@@ -86,7 +86,7 @@ class PostTableViewCell: UITableViewCell {
 //        self.readMorePressed = !self.readMorePressed
 //    }
 //
-    func setUpCell(){
+    func setUpCellView(){
         self.baseView.backgroundColor = UIColor.appColor
         self.containerView.layer.borderWidth = 1
         self.containerView.layer.borderColor = UIColor.borderColor
@@ -104,31 +104,40 @@ class PostTableViewCell: UITableViewCell {
         self.mainPostImage.layer.borderWidth = 0.5
         self.mainPostImage.layer.borderColor = UIColor.borderColor
         self.postText.textColor = UIColor.postTextColor
-    }
-    
-    override open func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-        setUpCell()
+        self.likeCount.textColor = UIColor.postTextColor
+        self.commentCount.textColor = UIColor.postTextColor
+        self.viewCount.textColor = UIColor.postTextColor
+        self.shareCount.textColor = UIColor.postTextColor
         self.abusePostImage.layer.borderColor = UIColor.gray.cgColor
         self.abusePostImage.layer.borderWidth = 1.0
         self.abusePostImage.layer.cornerRadius = 5
+        profileImage.layer.cornerRadius = 25
+    }
+    func setUpCellText(){
+        self.name.font = UIFont.appFont(font: Fonts.regular, size: FontSize.smallTextFont)
+        self.timeOfPost.font = UIFont.appFont(font: Fonts.regular, size: FontSize.ultraSmallTextFont)
+        self.postText.font = UIFont.appFont(font: Fonts.regular, size: FontSize.descriptionFont)
+        
+        self.likeCount.font =  UIFont.appFont(font: Fonts.regular, size: FontSize.midTextFont)
+        self.commentCount.font =  UIFont.appFont(font: Fonts.regular, size: FontSize.midTextFont)
+        self.shareCount.font =  UIFont.appFont(font: Fonts.regular, size: FontSize.midTextFont)
+        self.viewCount.font =  UIFont.appFont(font: Fonts.regular, size: FontSize.midTextFont)
+    }
+    override open func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+        setUpCellView()
+        setUpCellText()
         images.append(firstStar)
         images.append(secondStar)
         images.append(thirdStar)
         images.append(fourthStar)
         images.append(fifthStar)
-        profileImage.layer.cornerRadius = 25
         self.mainPostImage.image = UIImage(named:"loading_data_logo")
         self.profileImage.image = UIImage(named: "default_avt_square")
         self.postText.numberOfLines = 2
-//        postText.enabledTypes = [.url]
-//        postText.collapsed = true
         postText.collapsedAttributedLink = NSAttributedString(string: "Read More")
         self.postText.delegate = self
-
-//        postText.ellipsis = NSAttributedString(string: "...")
-
     }
     
     override func prepareForReuse() {
@@ -154,7 +163,7 @@ class PostTableViewCell: UITableViewCell {
         self.setProfieImage(completePost: cellPost!)
         self.setRatingwith(completePost:cellPost!)
         self.postText.text = completePost?.post?.content?.postText
-        self.name.text = completePost?.post?.name?.removingPercentEncoding
+        self.name.text = completePost?.post?.fullName
 //        self.readMore.setTitle("Read More", for: .normal)
         if let likeCount = completePost?.post?.likeCount{
             self.likeCount.text = (likeCount > 1) ? "\(likeCount) likes":"\(likeCount) like"
@@ -194,6 +203,10 @@ class PostTableViewCell: UITableViewCell {
 //        }else{
 //            self.readMore.isHidden = false
 //        }
+        if "\(/completePost?.post?.userId)" == MentorzPostViewer.shared.dataSource?.getUserId(){
+            self.abuseButton.isHidden = true
+            self.abusePostImage.layer.borderColor = UIColor.white.cgColor
+        }
     }
     private func setURLLinkPreview(url:URL){
             LKLinkPreviewReader.linkPreview(from: url) { (preview,error) in
@@ -339,6 +352,7 @@ class PostTableViewCell: UITableViewCell {
         commentVC.modalPresentationStyle = .fullScreen
         commentVC.refreshCellCommentCount = { (count) in
             self.commentCount.text = "\(count) comment"
+            self.completePost?.post?.commentCount = count
         }
         UIApplication.shared.keyWindow?.rootViewController?.present(commentVC, animated: true, completion:{
             commentVC.getCommentList(userId: self.userId, postId: "\(/self.completePost?.post?.postId)",comments: self.completePost?.comments)
@@ -362,6 +376,11 @@ class PostTableViewCell: UITableViewCell {
 //        }
         let objectstoshare = [caption,url]
         let controller = UIActivityViewController(activityItems: objectstoshare, applicationActivities: nil)
+        controller.excludedActivityTypes = [UIActivity.ActivityType.postToWeibo,
+                                            UIActivity.ActivityType.print, UIActivity.ActivityType.copyToPasteboard,
+                                            UIActivity.ActivityType.assignToContact, UIActivity.ActivityType.saveToCameraRoll,
+                                            UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.postToFlickr,
+                                            UIActivity.ActivityType.postToVimeo, UIActivity.ActivityType.postToTencentWeibo,UIActivity.ActivityType.airDrop]
         controller.setValue(caption, forKey: "Subject")
         UIApplication.shared.keyWindow?.rootViewController?.present(controller, animated: true, completion: nil)
         controller.completionWithItemsHandler = {(activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
@@ -373,35 +392,36 @@ class PostTableViewCell: UITableViewCell {
                 if result{
                 self.shareCount.text = (/self.completePost?.post?.shareCount > 1) ? "\(/self.completePost?.post?.shareCount) shares":"\(/self.completePost?.post?.shareCount) share"
                 }
-            })
-        }
-    }
-    
-    func sharePost(){
-        let caption:NSString = self.postText?.text as! NSString
-        let url = NSURL(string: "google.com")!
-        let objectstoshare = [caption,url]
-        let controller = UIActivityViewController(activityItems: objectstoshare, applicationActivities: nil)
-        controller.excludedActivityTypes = [UIActivity.ActivityType.postToWeibo,
-                                            UIActivity.ActivityType.print, UIActivity.ActivityType.copyToPasteboard,
-                                            UIActivity.ActivityType.assignToContact, UIActivity.ActivityType.saveToCameraRoll,
-                                            UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.postToFlickr,
-                                            UIActivity.ActivityType.postToVimeo, UIActivity.ActivityType.postToTencentWeibo,UIActivity.ActivityType.airDrop]
-        controller.setValue(caption, forKey: "Subject")
-        controller.completionWithItemsHandler = {(activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
-            if !completed {
-                // User canceled
-                return
-            }else{
                 MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
                     PostsRestManager.shared.sharePost(postId: "\(/self.completePost?.post?.postId)") { (statusCode) in
                         MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
                 }
-            }
+            })
         }
-        UIApplication.shared.keyWindow?.rootViewController?.present(controller, animated: true, completion: nil)
-
     }
+    
+//    func sharePost(){
+//        let caption:NSString = self.postText?.text as! NSString
+//        let url = NSURL(string: "google.com")!
+//        let objectstoshare = [caption,url]
+//        let controller = UIActivityViewController(activityItems: objectstoshare, applicationActivities: nil)
+//        controller.excludedActivityTypes = [UIActivity.ActivityType.postToWeibo,
+//                                            UIActivity.ActivityType.print, UIActivity.ActivityType.copyToPasteboard,
+//                                            UIActivity.ActivityType.assignToContact, UIActivity.ActivityType.saveToCameraRoll,
+//                                            UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.postToFlickr,
+//                                            UIActivity.ActivityType.postToVimeo, UIActivity.ActivityType.postToTencentWeibo,UIActivity.ActivityType.airDrop]
+//        controller.setValue(caption, forKey: "Subject")
+//        controller.completionWithItemsHandler = {(activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
+//            if !completed {
+//                // User canceled
+//                return
+//            }else{
+//
+//            }
+//        }
+//        UIApplication.shared.keyWindow?.rootViewController?.present(controller, animated: true, completion: nil)
+//
+//    }
 }
 
 extension PostTableViewCell:ExpandableLabelDelegate{

@@ -26,7 +26,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jRu-Hh-RES">
-                        <rect key="frame" x="66" y="8" width="299" height="20"/>
+                        <rect key="frame" x="66" y="8" width="313" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="O6a-ly-Fja"/>
                             <constraint firstAttribute="height" constant="20" id="Tm8-gw-thY"/>
@@ -43,13 +43,13 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comment Message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VDA-QZ-pZ1">
-                        <rect key="frame" x="66" y="32" width="299" height="43"/>
-                        <fontDescription key="fontDescription" name="MyriadPro-Regular" family="Myriad Pro" pointSize="14"/>
+                        <rect key="frame" x="66" y="32" width="313" height="43"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lR6-im-aD3">
-                        <rect key="frame" x="66" y="79" width="299" height="20"/>
+                        <rect key="frame" x="66" y="79" width="313" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="LTT-0s-78u"/>
                         </constraints>
@@ -65,12 +65,12 @@
                         </constraints>
                     </view>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="close" translatesAutoresizingMaskIntoConstraints="NO" id="wHI-UD-tsk">
-                        <rect key="frame" x="369" y="8" width="30" height="30"/>
+                        <rect key="frame" x="383" y="1" width="16" height="30"/>
                     </imageView>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wi6-BI-Cuy">
-                        <rect key="frame" x="369" y="8" width="30" height="30"/>
+                        <rect key="frame" x="383" y="8" width="16" height="16"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="30" id="eVi-Cb-eqg"/>
+                            <constraint firstAttribute="width" constant="16" id="eVi-Cb-eqg"/>
                             <constraint firstAttribute="width" secondItem="wi6-BI-Cuy" secondAttribute="height" multiplier="1:1" id="suZ-if-fwX"/>
                         </constraints>
                         <connections>

@@ -14,6 +14,8 @@ class UploadProgressCell: UITableViewCell {
     @IBOutlet weak var view: UIView!
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var currentProgress: UIProgressView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var closeButton: UIButton!
     var delegate : PostTableViewCellDelegate?
     var indexPath:IndexPath = IndexPath()
     
@@ -28,10 +30,14 @@ class UploadProgressCell: UITableViewCell {
         super.awakeFromNib()
         self.percentageCompleted.text = "0 %"
         self.currentProgress.progress = 0.0
+        self.activityIndicator.isHidden = true
         UploadPostManager.shared.delegate = self
         UploadPostManager.shared.uploadCompleted = {
+            self.activityIndicator.isHidden = false
             UploadPostManager.shared.request = nil
             self.delegate?.shouldRemoveCell(indexPath: self.indexPath)
+            self.closeButton.isHidden = true
+            self.activityIndicator.startAnimating()
         }
     }
     func setUpView(){

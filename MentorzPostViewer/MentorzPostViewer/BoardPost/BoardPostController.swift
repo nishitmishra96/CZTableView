@@ -120,7 +120,7 @@ class PostController: NSObject,RegularPostController {
         return cell
     }
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        if UploadPostManager.shared.request == nil && indexPath.section == 1{
+        if UploadPostManager.shared.request == nil && indexPath.section == 1{
             PostsRestManager.shared.updatePostViewCount(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), postId: "\(String(describing: /self.postToShowOnUI[indexPath.row].post?.postId))") { (statusCode) in
                 if statusCode == HttpResponseCodes.NotFound.rawValue{
                     self.postToShowOnUI[indexPath.row].post?.viewCount = (self.postToShowOnUI[indexPath.row].post?.viewCount ?? 0) + 1
@@ -130,7 +130,7 @@ class PostController: NSObject,RegularPostController {
                     print("view count not increased")
                 }
             }
-//        }
+        }
     }
     public func paginate(_ tableView: PagingTableView, to page: Int) {
         self.tableView?.isLoading = true
@@ -214,7 +214,7 @@ extension PostController:PostTableViewCellDelegate{
             self.postToShowOnUI = self.boardPostOriginal
             self.tableView?.deleteRows(at: [indexPath], with: .left)
             self.tableView?.endUpdates()
-        }else{
+        }else if UploadPostManager.shared.request != nil{
             self.tableView?.beginUpdates()
             self.tableView?.deleteRows(at: [indexPath], with: .automatic)
             self.tableView?.endUpdates()

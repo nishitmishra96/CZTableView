@@ -28,30 +28,33 @@ class dateTimeUtil{
         
         let years = Int(timeDifference) / SECONDS_IN_YEAR
         if years > 0{
-            let yearDurationString = (years == 1) ? NSLocalizedString("Year", comment: "") : NSLocalizedString("Years", comment: "")
+//            let yearDurationString = (years == 1) ? NSLocalizedString("Year", comment: "") : NSLocalizedString("Years", comment: "")
+            let yearDurationString = "y"
             return "\(years) \(yearDurationString) ago"
         }
         
         let months = Int(timeDifference) / SECONDS_IN_MONTH
         if months > 0{
-            let monthDurationString = (months == 1) ? NSLocalizedString("mon", comment: "") : NSLocalizedString("mons", comment: "")
+//            let monthDurationString = (months == 1) ? NSLocalizedString("mon", comment: "") : NSLocalizedString("mons", comment: "")
+            let monthDurationString = "m"
             return "\(months) \(monthDurationString) ago"
         }
         
         let weeks = Int(timeDifference) / SECONDS_IN_WEEK
         if weeks > 0{
-            let weekDurationString = (weeks == 1) ? NSLocalizedString("Wk", comment: "") : NSLocalizedString("wks", comment: "")
+//            let weekDurationString = (weeks == 1) ? NSLocalizedString("Wk", comment: "") : NSLocalizedString("wks", comment: "")
+            let weekDurationString = "w"
             return "\(weeks) \(weekDurationString) ago"
         }
         let days = Int(timeDifference) / SECONDS_IN_DAY
         if days > 0{
-            let daysDurationString = (days == 1) ? NSLocalizedString("dy", comment: "") : NSLocalizedString("days", comment: "")
+            let daysDurationString = "d"
             return "\(days) \(daysDurationString) ago"
         }
         
         let hours = Int(timeDifference) / SECONDS_IN_HOUR
         if hours > 0{
-            let hoursDurationString = (hours == 1) ? NSLocalizedString("hr", comment: "") : NSLocalizedString("hrs", comment: "")
+            let hoursDurationString = "h"
             return "\(hours) \(hoursDurationString) ago"
         }
         
@@ -75,36 +78,36 @@ class dateTimeUtil{
         
         let years = Int(timeDifference) / SECONDS_IN_YEAR
         if years > 0{
-            let yearDurationString = (years == 1) ? NSLocalizedString("yr", comment: "") : NSLocalizedString("yrs", comment: "")
+            let yearDurationString = (years == 1) ? NSLocalizedString("year", comment: "") : NSLocalizedString("years", comment: "")
             return "\(years) \(yearDurationString) ago"
         }
         
         let months = Int(timeDifference) / SECONDS_IN_MONTH
         if months > 0{
-            let monthDurationString = (months == 1) ? NSLocalizedString("mon", comment: "") : NSLocalizedString("mons", comment: "")
+            let monthDurationString = (months == 1) ? NSLocalizedString("month", comment: "") : NSLocalizedString("months", comment: "")
             return "\(months) \(monthDurationString) ago"
         }
         
         let weeks = Int(timeDifference) / SECONDS_IN_WEEK
         if weeks > 0{
-            let weekDurationString = (weeks == 1) ? NSLocalizedString("wk", comment: "") : NSLocalizedString("wks", comment: "")
+            let weekDurationString = (weeks == 1) ? NSLocalizedString("week", comment: "") : NSLocalizedString("weeks", comment: "")
             return "\(weeks) \(weekDurationString) ago"
         }
         let days = Int(timeDifference) / SECONDS_IN_DAY
         if days > 0{
-            let daysDurationString = (days == 1) ? NSLocalizedString("dy", comment: "") : NSLocalizedString("dys", comment: "")
+            let daysDurationString = (days == 1) ? NSLocalizedString("day", comment: "") : NSLocalizedString("days", comment: "")
             return "\(days) \(daysDurationString) ago"
         }
         
         let hours = Int(timeDifference) / SECONDS_IN_HOUR
         if hours > 0{
-            let hoursDurationString = (hours == 1) ? NSLocalizedString("hr", comment: "") : NSLocalizedString("hrs", comment: "")
+            let hoursDurationString = (hours == 1) ? NSLocalizedString("hour", comment: "") : NSLocalizedString("hours", comment: "")
             return "\(hours) \(hoursDurationString) ago"
         }
         
         let minutes = Int(timeDifference) / SECONDS_IN_MINUTES
          if minutes > 0{
-             let hoursDurationString = (minutes == 1) ? NSLocalizedString("Min", comment: "") : NSLocalizedString("Mins", comment: "")
+             let hoursDurationString = (minutes == 1) ? NSLocalizedString("minute", comment: "") : NSLocalizedString("minutes", comment: "")
              return "\(minutes) \(hoursDurationString) ago"
          }
         

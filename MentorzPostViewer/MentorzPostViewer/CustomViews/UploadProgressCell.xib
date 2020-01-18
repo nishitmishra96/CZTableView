@@ -44,17 +44,24 @@
                                     <action selector="close:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="MAE-IZ-mPE"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="IYk-rT-4KM">
+                                <rect key="frame" x="394" y="15" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="IYk-rT-4KM" firstAttribute="centerY" secondItem="lVV-lC-VsC" secondAttribute="centerY" id="4wK-Jp-wwJ"/>
                             <constraint firstItem="MXk-ua-Jwv" firstAttribute="centerY" secondItem="TVp-Ss-jWi" secondAttribute="centerY" id="57C-xa-FD3"/>
+                            <constraint firstItem="IYk-rT-4KM" firstAttribute="width" secondItem="lVV-lC-VsC" secondAttribute="width" multiplier="0.666667" id="Fjm-00-Pu8"/>
                             <constraint firstAttribute="height" constant="50" id="Nus-fb-8xl"/>
                             <constraint firstItem="tYA-NQ-jWQ" firstAttribute="leading" secondItem="MXk-ua-Jwv" secondAttribute="trailing" constant="4" id="Tzv-FS-66R"/>
                             <constraint firstItem="tYA-NQ-jWQ" firstAttribute="centerY" secondItem="TVp-Ss-jWi" secondAttribute="centerY" id="YbO-vq-fr4"/>
                             <constraint firstItem="lVV-lC-VsC" firstAttribute="centerY" secondItem="TVp-Ss-jWi" secondAttribute="centerY" id="acH-GE-BbA"/>
                             <constraint firstAttribute="trailing" secondItem="lVV-lC-VsC" secondAttribute="trailing" constant="4" id="aom-0o-D4e"/>
                             <constraint firstItem="MXk-ua-Jwv" firstAttribute="leading" secondItem="TVp-Ss-jWi" secondAttribute="leading" constant="4" id="ezy-V9-Vfe"/>
+                            <constraint firstItem="IYk-rT-4KM" firstAttribute="centerX" secondItem="lVV-lC-VsC" secondAttribute="centerX" id="g69-7Y-E0b"/>
                             <constraint firstItem="lVV-lC-VsC" firstAttribute="leading" secondItem="tYA-NQ-jWQ" secondAttribute="trailing" constant="4" id="wvu-FD-7wb"/>
+                            <constraint firstItem="IYk-rT-4KM" firstAttribute="height" secondItem="lVV-lC-VsC" secondAttribute="height" multiplier="0.666667" id="z1K-aG-FNu"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -67,6 +74,8 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="activityIndicator" destination="IYk-rT-4KM" id="BjK-5z-4bl"/>
+                <outlet property="closeButton" destination="lVV-lC-VsC" id="BJS-3i-x7V"/>
                 <outlet property="containerView" destination="TVp-Ss-jWi" id="SEM-NZ-3Sr"/>
                 <outlet property="currentProgress" destination="tYA-NQ-jWQ" id="j2y-7x-SpB"/>
                 <outlet property="percentageCompleted" destination="MXk-ua-Jwv" id="6od-LF-qDr"/>

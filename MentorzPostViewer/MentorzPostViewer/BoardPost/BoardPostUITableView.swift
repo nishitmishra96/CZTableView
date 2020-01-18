@@ -86,7 +86,6 @@ public class BoardPostUITableView: BaseTableView {
             }
             if !isVideo{
                 UploadPostManager.shared.uploadImagePost(imageName: imageName, imageDataToBeUploaded: imageDataToBeUploaded, mimeType: mimeType, descriptionFieldText: /descriptionText) { (newPost, statusCode) in
-                    
                     UploadPostManager.shared.request = nil
                     UploadPostManager.shared.uploadCompleted?()
                     if statusCode == HttpResponseCodes.success.rawValue{
@@ -129,6 +128,7 @@ public class BoardPostUITableView: BaseTableView {
             uploadPopUp.modalPresentationStyle = .overFullScreen
             UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
         }else{
+            self.setContentOffset(.zero, animated: true)
             let uploadPostVC = Storyboard.home.instanceOf(viewController: UploadPostPopupVC.self)!
             let uploadPopUp = UIAlertController(title: "Add Post", message: "", preferredStyle: .alert)
             let uploadAction = UIAlertAction(title: "Publish", style: .default) { (uploadAction) in

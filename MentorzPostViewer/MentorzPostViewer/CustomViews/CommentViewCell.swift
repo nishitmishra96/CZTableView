@@ -9,6 +9,7 @@
 import UIKit
 import TTTAttributedLabel
 import SDWebImage
+import SVProgressHUD
 class CommentViewCell: UITableViewCell {
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var commentMessage: UILabel!
@@ -35,7 +36,9 @@ class CommentViewCell: UITableViewCell {
     
     @IBAction func deleteComment(_ sender: Any) {
         MentorzPostViewer.shared.delegate?.handleProgressHUD(shouldShow: true)
+        SVProgressHUD.show()
         PostsRestManager.shared.deleteCommentWith(userId: "\(/comment?.comment?.userId)", postId: "\(/self.postId)", commentId: "\(/self.comment?.comment?.commentId)"){(statusCode) in
+            SVProgressHUD.dismiss()
             MentorzPostViewer.shared.delegate?.handleProgressHUD(shouldShow: false)
             if statusCode == HttpResponseCodes.success.rawValue{
                 self.delegate?.userDeletedComment(completeComment: self.comment ?? CompleteComment())

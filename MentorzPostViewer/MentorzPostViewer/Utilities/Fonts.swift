@@ -10,9 +10,10 @@ import UIKit
 import Foundation
 public enum FontSize : Int{
     case largeTextFont = 20
-    case basicTitleTextFont = 16
+    case midTextFont = 12
     case descriptionFont  = 14
-    case smallTextFont  = 12
+    case ultraSmallTextFont = 10
+    case smallTextFont  = 18
     case ultralargeTextFont = 24
 }
 public struct Fonts {

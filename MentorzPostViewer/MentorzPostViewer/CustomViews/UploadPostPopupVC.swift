@@ -13,7 +13,7 @@ import Photos
 class UploadPostPopupVC: UIViewController {
     @IBOutlet weak var contentView: UIView!
     
-    @IBOutlet weak var descriptionField: UITextField!
+    @IBOutlet weak var descriptionField: UITextView!
     @IBOutlet weak var descriptionImage: UIImageView!
     @IBOutlet weak var textCount: UILabel!
     @IBOutlet weak var errorLabel: UILabel!
@@ -39,7 +39,10 @@ class UploadPostPopupVC: UIViewController {
         self.errorLabel.isHidden = true
         self.contentView.alpha = 0.2
         self.descriptionField.delegate = self
-        self.descriptionField.addTarget(self, action: #selector(validations), for: .allEvents)
+//        self.descriptionField.addTarget(self, action: #selector(validations), for: .allEvents)
+        self.descriptionField.layer.borderWidth = 0.5
+        self.descriptionField.layer.borderColor = UIColor.postTextColor.cgColor
+        self.descriptionField.textColor = UIColor.postTextColor
     }
     
     @objc func validations(){
@@ -131,5 +134,28 @@ extension UploadPostPopupVC : UIImagePickerControllerDelegate , UINavigationCont
         default:
             break
         }
+    }
+}
+
+extension UploadPostPopupVC:UITextViewDelegate{
+    func textViewDidChange(_ textView: UITextView) {
+        self.textCount.text = "Count :  \(/descriptionField.text?.count)" + "/140"
+
+                if /descriptionField.text?.count > 0{
+            self.errorLabel.isHidden = true
+            uploadAction?.isEnabled = true
+        }else{
+            self.errorLabel.isHidden = false
+            self.errorLabel.text = "Please Enter Description"
+            uploadAction?.isEnabled = false
+        }
+    }
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool{
+        let maxLength = 140
+        let currentString: NSString = textView.text! as NSString
+        let newString: NSString =
+            currentString.replacingCharacters(in: range, with: text) as NSString
+
+        return newString.length <= maxLength
     }
 }

@@ -28,6 +28,7 @@ public class BaseTableView: PagingTableView {
         self.register(UINib.init(nibName: "PostTableViewCell", bundle: Bundle.init(identifier: "com.craterzone.MentorzPostViewer")), forCellReuseIdentifier: "PostTableViewCell")
         self.register(UINib.init(nibName: "UploadProgressCell", bundle: Bundle.init(identifier: "com.craterzone.MentorzPostViewer")), forCellReuseIdentifier: "UploadProgressCell")
         self.refreshControl = UIRefreshControl()
+        refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.refreshControl?.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         self.allowsSelection = false
         self.estimatedRowHeight = UITableView.automaticDimension

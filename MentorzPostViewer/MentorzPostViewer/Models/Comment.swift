@@ -24,7 +24,7 @@ public class Comment : NSObject, Mappable{
 
     var fullName : String{
         get{
-            return /name + " " + /lastName
+            return /(/name + " " + /lastName).removingPercentEncoding
         }
     }
     override init() {

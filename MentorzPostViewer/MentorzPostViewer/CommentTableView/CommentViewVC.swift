@@ -12,6 +12,7 @@ class CommentViewVC: UIViewController {
    
     @IBOutlet weak var tableView: CommentTableView!
     @IBOutlet weak var CommentTextField: UITextField!
+    @IBOutlet weak var commentTitleLabel: UILabel!
     @IBOutlet weak var messegeLabel: UILabel!
     var refreshCellCommentCount:((Int)->())?
     var dataSource : CommentTableViewDataSource?
@@ -19,6 +20,8 @@ class CommentViewVC: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         tableView.register(UINib.init(nibName: "CommentViewCell", bundle: Bundle.init(identifier: "com.craterzone.MentorzPostViewer")), forCellReuseIdentifier: "CommentViewCell")
+        UIApplication.shared.statusBarUIView?.backgroundColor = UIColor.redThemeColor
+        self.commentTitleLabel.font = UIFont.appFont(font: Fonts.regular, size: FontSize.largeTextFont)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -44,4 +47,36 @@ class CommentViewVC: UIViewController {
         }
         
     }
+}
+extension UIApplication {
+var statusBarUIView: UIView? {
+
+    if #available(iOS 13.0, *) {
+        let tag = 3848245
+
+        let keyWindow = UIApplication.shared.connectedScenes
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows.first
+
+        if let statusBar = keyWindow?.viewWithTag(tag) {
+            return statusBar
+        } else {
+            let height = keyWindow?.windowScene?.statusBarManager?.statusBarFrame ?? .zero
+            let statusBarView = UIView(frame: height)
+            statusBarView.tag = tag
+            statusBarView.layer.zPosition = 999999
+
+            keyWindow?.addSubview(statusBarView)
+            return statusBarView
+        }
+
+    } else {
+
+        if responds(to: Selector(("statusBar"))) {
+            return value(forKey: "statusBar") as? UIView
+        }
+    }
+    return nil
+  }
 }

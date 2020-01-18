@@ -49,4 +49,9 @@ class Post : NSObject, Mappable{
         viewCount <- map["view_count"]
         
     }
+    var fullName : String{
+        get{
+            return /(/name + " " + /lastName).removingPercentEncoding
+        }
+    }
 }
