@@ -11,28 +11,29 @@ import Alamofire
 
 @objc public protocol BoardPostStatusCodeDelegates{
     @objc func didReceiveForTableViewData(with statusCode:Int)
+    @objc func showNoSearchResult(with Value:Bool)
 }
 public class BoardPostUITableView: BaseTableView {
     var controller:PostController?
-    var errorLabel:UILabel?
     
     @objc open var statusCodeDelegate:BoardPostStatusCodeDelegates?
     open override func awakeFromNib() {
         super.awakeFromNib()
-        errorLabel = UILabel(frame: CGRect(x: self.frame.width/4, y: self.frame.midY, width: self.frame.width - 32, height: 50))
-        errorLabel?.text = "No Content Available"
-        errorLabel?.font = UIFont.init(name: "Helvetica Neue", size: 22.0)
-        self.addSubview(errorLabel!)
-        errorLabel?.isHidden = true
     }
     
     @objc override func didPullToRefresh(){
         self.refreshControl?.beginRefreshing()
+        self.controller?.filterPostString = ""
         self.reset()
     }
     @objc public func filterLocalPost(string:String){
         self.controller?.filterPostString = string
         self.reloadData()
+        if self.numberOfRows(inSection: 1) == 0{
+            statusCodeDelegate?.showNoSearchResult(with: true)
+        }else{
+            statusCodeDelegate?.showNoSearchResult(with: false)
+        }
     }
     @objc public func setupTableViewForProfile(user id:String){
         self.controller = PostController(foruserProfile: id, base: self)

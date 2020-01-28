@@ -89,20 +89,20 @@ class PostTableViewCell: UITableViewCell {
     func setUpCellView(){
         self.baseView.backgroundColor = UIColor.appColor
         self.containerView.layer.borderWidth = 1
-        self.containerView.layer.borderColor = UIColor.borderColor
+        self.containerView.layer.borderColor = UIColor.borderColor.cgColor
         self.containerView.layer.cornerRadius = 5
         self.likeButton.layer.borderWidth = 0.5
-        self.likeButton.layer.borderColor = UIColor.borderColor
+        self.likeButton.layer.borderColor = UIColor.borderColor.cgColor
         self.commentButton.layer.borderWidth = 0.5
-        self.commentButton.layer.borderColor = UIColor.borderColor
+        self.commentButton.layer.borderColor = UIColor.borderColor.cgColor
         self.shareButton.layer.borderWidth = 0.5
-        self.shareButton.layer.borderColor = UIColor.borderColor
+        self.shareButton.layer.borderColor = UIColor.borderColor.cgColor
         self.userActivitiesView.roundCorners(.bottomLeft, radius: 5)
         self.userActivitiesView.roundCorners(.bottomRight, radius: 5)
         self.likeButton.roundCorners(.bottomLeft, radius: 5)
         self.shareButton.roundCorners(.bottomRight, radius: 5)
         self.mainPostImage.layer.borderWidth = 0.5
-        self.mainPostImage.layer.borderColor = UIColor.borderColor
+        self.mainPostImage.layer.borderColor = UIColor.borderColor.cgColor
         self.postText.textColor = UIColor.postTextColor
         self.likeCount.textColor = UIColor.postTextColor
         self.commentCount.textColor = UIColor.postTextColor
@@ -111,6 +111,8 @@ class PostTableViewCell: UITableViewCell {
         self.abusePostImage.layer.borderColor = UIColor.gray.cgColor
         self.abusePostImage.layer.borderWidth = 1.0
         self.abusePostImage.layer.cornerRadius = 5
+        profileImage.layer.borderWidth = 1.0
+        profileImage.layer.borderColor = UIColor.borderColor.cgColor
         profileImage.layer.cornerRadius = 25
     }
     func setUpCellText(){
@@ -173,9 +175,9 @@ class PostTableViewCell: UITableViewCell {
         }else{
             self.likeButton.setImage(UIImage(named: "like", in: Bundle.init(identifier: "com.craterzone.MentorzPostViewer"), compatibleWith: UITraitCollection(displayScale: 1.0)), for: .normal)
         }
-        self.commentCount.text = (/completePost?.post?.commentCount > 1) ? "\(/completePost?.post?.commentCount) comments " : "\(/completePost?.post?.commentCount) comment"
-        self.viewCount.text = (/completePost?.post?.viewCount > 1) ? "\(/completePost?.post?.viewCount) views " : "\(/completePost?.post?.viewCount) view"
-        self.shareCount.text = (/completePost?.post?.shareCount > 1) ? "\(/completePost?.post?.shareCount) shares":"\(/completePost?.post?.shareCount) share"
+        self.commentCount.text = (/completePost?.post?.commentCount > 1) ? "\(/completePost?.post?.commentCount) Comments " : "\(/completePost?.post?.commentCount) Comment"
+        self.viewCount.text = (/completePost?.post?.viewCount > 1) ? "\(/completePost?.post?.viewCount) Views " : "\(/completePost?.post?.viewCount) View"
+        self.shareCount.text = (/completePost?.post?.shareCount > 1) ? "\(/completePost?.post?.shareCount) Shares":"\(/completePost?.post?.shareCount) Share"
         if /completePost?.post?.content?.lresId?.count >= 2{
             self.mainPostImage.isHidden = false
             self.playButton.isHidden = false
@@ -286,18 +288,21 @@ class PostTableViewCell: UITableViewCell {
     @IBAction func didTapOnImage(_ sender: UIButton) {
         if self.completePost?.post?.content?.mediaType == "IMAGE"{
             let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-            imageViewer.modalPresentationStyle = .fullScreen
-            UIApplication.shared.keyWindow?.rootViewController?.present(imageViewer, animated: true){
+            let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
+            navController.modalPresentationStyle = .fullScreen
+            UIApplication.shared.keyWindow?.rootViewController?.present(navController, animated: true){
                 imageViewer.imageView.image = self.mainPostImage.image
             }
 
         }else if self.completePost?.post?.content?.mediaType == "TEXT" {
             let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
+            let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
+            navController.modalPresentationStyle = .fullScreen
             if let _ = self.completePost?.post?.content?.hresId {
                 imageViewer.url = URL(string: completePost?.post?.content?.hresId ?? "")
             }
             imageViewer.modalPresentationStyle = .fullScreen
-            UIApplication.shared.keyWindow?.rootViewController?.present(imageViewer, animated: true, completion: nil)
+            UIApplication.shared.keyWindow?.rootViewController?.present(navController, animated: true, completion: nil)
         }else if self.completePost?.post?.content?.mediaType == "VIDEO"{
             let videoURL = URL(string: completePost?.post?.content?.hresId ?? "")
             let player = AVPlayer(url: videoURL!)
@@ -349,12 +354,13 @@ class PostTableViewCell: UITableViewCell {
     
     @IBAction func commentButtonPressed(_ sender: Any) {
         let commentVC = Storyboard.home.instanceOf(viewController: CommentViewVC.self)!
-        commentVC.modalPresentationStyle = .fullScreen
         commentVC.refreshCellCommentCount = { (count) in
             self.commentCount.text = "\(count) comment"
             self.completePost?.post?.commentCount = count
         }
-        UIApplication.shared.keyWindow?.rootViewController?.present(commentVC, animated: true, completion:{
+        let navController = UINavigationController(rootViewController: commentVC) // Creating a navigation controller with VC1 at the root of the navigation stack.
+        navController.modalPresentationStyle = .fullScreen
+        UIApplication.shared.keyWindow?.rootViewController?.present(navController, animated: true, completion:{
             commentVC.getCommentList(userId: self.userId, postId: "\(/self.completePost?.post?.postId)",comments: self.completePost?.comments)
         })
     }

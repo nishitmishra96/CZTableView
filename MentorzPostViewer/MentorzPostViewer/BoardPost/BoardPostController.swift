@@ -99,9 +99,9 @@ class PostController: NSObject,RegularPostController {
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0{
-            //            return /uploadPostManager?.currentlyUploadPost.count
             return UploadPostManager.shared.request != nil ? 1 : 0
         }
+
         return self.postToShowOnUI.count
     }
     
@@ -166,11 +166,6 @@ extension PostController{
             self.filterPostString = str
             self.tableView?.isLoading = false
             (self.tableView as? BoardPostUITableView)?.statusCodeDelegate?.didReceiveForTableViewData(with: statusCode)
-            if self.boardPostOriginal.count == 0{
-                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = false
-            }else{
-                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = true
-            }
         })
     }
     public func getPostOfOtherUser(forPage:Int){
@@ -194,12 +189,6 @@ extension PostController{
             self.filterPostString = str
             self.tableView?.isLoading = false
             self.tableView?.reloadData()
-            if self.boardPostOriginal.count == 0{
-                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = false
-            }else{
-                (self.tableView as? BoardPostUITableView)?.errorLabel?.isHidden = true
-                
-            }
         })
     }
 }

@@ -10,6 +10,7 @@ import UIKit
 import TTTAttributedLabel
 import SDWebImage
 import SVProgressHUD
+import moa
 class CommentViewCell: UITableViewCell {
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var commentMessage: UILabel!
@@ -67,11 +68,13 @@ class CommentViewCell: UITableViewCell {
     }
     
     func setProfileImageWith(urlString:String?){
-        if let url = urlString{
-            self.profileImage.sd_setImage(with: URL(string: urlString!), placeholderImage: UIImage(named:"default_avt_square"), options: .allowInvalidSSLCertificates, context: [:])
-        }else{
-            self.profileImage.image = UIImage(named:"default_avt_square")
-        }
+//        if let url = urlString{
+//            self.profileImage.sd_setImage(with: URL(string: urlString!), placeholderImage: UIImage(named:"default_avt_square"), options: .allowInvalidSSLCertificates, context: [:])
+//        }else{
+//            self.profileImage.image = UIImage(named:"default_avt_square")
+//        }
+        self.profileImage.image = UIImage(named:"default_avt_square")
+        self.profileImage.moa.url = urlString
     }
     
 }

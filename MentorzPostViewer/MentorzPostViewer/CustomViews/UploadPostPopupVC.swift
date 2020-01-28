@@ -43,10 +43,14 @@ class UploadPostPopupVC: UIViewController {
         self.descriptionField.layer.borderWidth = 0.5
         self.descriptionField.layer.borderColor = UIColor.postTextColor.cgColor
         self.descriptionField.textColor = UIColor.postTextColor
+        self.textCount.textColor = UIColor.borderColor
+        self.textCount.font = UIFont.appFont(font:Fonts.bold , size: FontSize.midTextFont)
+        descriptionField.text = "Share what you know"
+        descriptionField.textColor = UIColor.lightGray
     }
     
     @objc func validations(){
-        self.textCount.text = "Count :  \(/descriptionField.text?.count)" + "/140"
+        self.textCount.text = "\(/descriptionField.text?.count)" + "/140"
         if /descriptionField.text?.count > 0{
             self.errorLabel.isHidden = true
             uploadAction?.isEnabled = true
@@ -58,41 +62,31 @@ class UploadPostPopupVC: UIViewController {
     }
     
     func imageSelected() {
-        let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-        imageViewer.delegate = self
-        imageViewer.modalPresentationStyle = .fullScreen
-        self.isVideo = false
-        self.isText = false
-        self.present(imageViewer, animated: true){
-            if let editedImage = self.info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
-                imageViewer.imageView.image = editedImage
-            }else{
-                imageViewer.imageView.image = self.info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-            }
-        }
+//        let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
+//        imageViewer.delegate = self
+////        imageViewer.modalPresentationStyle = .fullScreen
+//        let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
+//        navController.modalPresentationStyle = .fullScreen
+//
+//        self.present(navController, animated: true){
+//            if let editedImage = self.info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
+//                imageViewer.imageView.image = editedImage
+//            }else{
+//                imageViewer.imageView.image = self.info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+//            }
+//        }
     }
     
     func videoSelected() {
-        let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-        imageViewer.delegate = self
-        imageViewer.modalPresentationStyle = .fullScreen
-        self.isText = false
-        self.isVideo = true
-        self.present(imageViewer, animated: true){
-            imageViewer.imageView.image = UploadPostManager.shared.getVideoThumbnail(filePathLocal: (self.info[UIImagePickerController.InfoKey.mediaURL] as! URL).absoluteString)
-            }
-    }
-}
-
-
-extension UploadPostPopupVC:UITextFieldDelegate{
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let maxLength = 140
-        let currentString: NSString = textField.text! as NSString
-        let newString: NSString =
-            currentString.replacingCharacters(in: range, with: string) as NSString
-        return newString.length <= maxLength
+//        let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
+//        imageViewer.delegate = self
+//        imageViewer.modalPresentationStyle = .fullScreen
+//        let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
+//        navController.modalPresentationStyle = .fullScreen
+//
+//        self.present(navController, animated: true){
+//            imageViewer.imageView.image = UploadPostManager.shared.getVideoThumbnail(filePathLocal: (self.info[UIImagePickerController.InfoKey.mediaURL] as! URL).absoluteString)
+//            }
     }
 }
 
@@ -131,19 +125,39 @@ extension UploadPostPopupVC : UIImagePickerControllerDelegate , UINavigationCont
         switch mediaType {
         case kUTTypeImage: print("ImageSelected")
         self.imageSelected()
+            self.isVideo = false
+            self.isText = false
         case kUTTypeMovie: print("VideoSelected")
         self.videoSelected()
+            self.isText = false
+            self.isVideo = true
         default:
             break
         }
+        self.donePressed()
     }
 }
 
 extension UploadPostPopupVC:UITextViewDelegate{
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "Share what you know"
+            textView.textColor = UIColor.lightGray
+        }
+    }
+    
+    
     func textViewDidChange(_ textView: UITextView) {
-        self.textCount.text = "Count :  \(/descriptionField.text?.count)" + "/140"
-
-                if /descriptionField.text?.count > 0{
+        self.textCount.text = "\(/descriptionField.text?.count)" + "/140"
+        
+        if /descriptionField.text?.count > 0{
             self.errorLabel.isHidden = true
             uploadAction?.isEnabled = true
         }else{

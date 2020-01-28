@@ -19,15 +19,7 @@ open class ImageViewerVC: UIViewController {
         super.viewDidLoad()
         initialSetup()
     }
-    
-    @IBAction func cancelPressed(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-        delegate?.imagePickerDissmissed()
-    }
-    @IBAction func donePressed(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-            delegate?.donePressed()
-    }
+
     func initialSetup(){
         imageView.isUserInteractionEnabled = true
         self.scrollView.minimumZoomScale=1;
@@ -37,6 +29,11 @@ open class ImageViewerVC: UIViewController {
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(onDoubleTap(gestureRecognizer:)))
         tapRecognizer.numberOfTapsRequired = 2
         scrollView.addGestureRecognizer(tapRecognizer)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(donePressed))
+    }
+    
+    @objc func donePressed(){
+        self.dismiss(animated: true, completion: nil)
     }
 
     open override func viewDidAppear(_ animated: Bool) {

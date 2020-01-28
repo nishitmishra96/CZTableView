@@ -43,7 +43,7 @@ class UploadProgressCell: UITableViewCell {
     func setUpView(){
         self.view.backgroundColor = UIColor.appColor
         self.containerView.layer.borderWidth = 1
-        self.containerView.layer.borderColor = UIColor.borderColor
+        self.containerView.layer.borderColor = UIColor.borderColor.cgColor
     }
 }
 extension UploadProgressCell:UploadPostProgressDelegate{
