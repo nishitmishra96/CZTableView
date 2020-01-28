@@ -16,6 +16,7 @@ enum HttpResponseCodes:Int{
     case Forbidden = 403
     case NotFound = 404
     case SomethingWentWrong = 700
+    case NoInternet = 0
 }
 
 

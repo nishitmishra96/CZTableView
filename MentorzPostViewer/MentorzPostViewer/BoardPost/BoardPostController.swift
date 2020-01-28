@@ -176,7 +176,7 @@ extension PostController{
                 self.tableView?.reloadData()
                 self.tableView?.reset()
             }
-            if statusCode == 200{
+            if statusCode == HttpResponseCodes.success.rawValue{
                 if let listData = postList{
                     let oldList = self.postToShowOnUI
                     for post in listData {

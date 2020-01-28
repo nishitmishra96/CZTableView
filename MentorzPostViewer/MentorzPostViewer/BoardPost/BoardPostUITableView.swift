@@ -62,11 +62,15 @@ public class BoardPostUITableView: BaseTableView {
         if isText{
             UploadPostManager.shared.uploadTextPost(descriptionFieldText: descriptionText)  { (newPost, statusCode) in
                 UploadPostManager.shared.request = nil
+                UploadPostManager.shared.uploadCompleted?()
                 if statusCode == HttpResponseCodes.success.rawValue{
                     if let newPostToShow = newPost{
                         self.controller?.InsertNewRow(withPost:newPostToShow)
+                    }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
+                        self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                     }else{
                         MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
+                        self.showAlertMessageWith(title: "Warning", message: "Upload Failure")
                     }
                 }
             }
@@ -94,8 +98,11 @@ public class BoardPostUITableView: BaseTableView {
                             self.controller?.InsertNewRow(withPost:newPostToShow)
                             print("post Sucessfully uploaded")
                             
+                        }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
+                            self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                         }else{
                             MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
+                            self.showAlertMessageWith(title: "Warning", message: "Upload Failure")
                         }
                     }
                 }
@@ -110,8 +117,11 @@ public class BoardPostUITableView: BaseTableView {
                                 self.controller?.InsertNewRow(withPost:newPostToShow)
                                 print("post Sucessfully uploaded")
                                 
+                            }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
+                                self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                             }else{
                                 MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
+                                self.showAlertMessageWith(title: "Warning", message: "Upload Failure")
                             }
                         }
                     }
@@ -120,14 +130,18 @@ public class BoardPostUITableView: BaseTableView {
         }
         
     }
+    
+    func showAlertMessageWith(title:String,message:String){
+        let uploadPopUp = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Dismiss", style: .destructive){ _ in
+        }
+        uploadPopUp.addAction(cancelAction)
+        uploadPopUp.modalPresentationStyle = .overFullScreen
+        UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
+    }
     @objc public func addPostbuttonClicked() {
         if UploadPostManager.shared.request != nil{
-            let uploadPopUp = UIAlertController(title: "Alert", message: "Wait or cancel current uploading to add a new post.", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Dismiss", style: .destructive){ _ in
-            }
-            uploadPopUp.addAction(cancelAction)
-            uploadPopUp.modalPresentationStyle = .overFullScreen
-            UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
+            self.showAlertMessageWith(title:  "Alert", message: "Wait or cancel current uploading to add a new post.")
         }else{
             self.setContentOffset(.zero, animated: true)
             let uploadPostVC = Storyboard.home.instanceOf(viewController: UploadPostPopupVC.self)!

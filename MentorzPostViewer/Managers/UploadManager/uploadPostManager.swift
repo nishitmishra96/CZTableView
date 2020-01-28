@@ -11,6 +11,12 @@ import UIKit
 import Alamofire
 import Photos
 
+class Connectivity {
+    class var isConnectedToInternet:Bool {
+        return NetworkReachabilityManager()?.isReachable ?? false
+    }
+}
+
 public class UploadPostManager:NSObject{
     static var shared = UploadPostManager()
     var request:UploadRequest?
@@ -45,6 +51,10 @@ public class UploadPostManager:NSObject{
     }
     
     func uploadImagePost(imageName:String,imageDataToBeUploaded:Data,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        if !Connectivity.isConnectedToInternet{
+            handler(nil,0)
+            return
+        }
         if imageName == "" || imageDataToBeUploaded == nil || mimeType == "" || descriptionFieldText == "" {
             handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
             return
@@ -95,6 +105,10 @@ public class UploadPostManager:NSObject{
         }
     }
     func uploadVideoPost(videoName:String,videoFileURL:NSURL?,mimeType:String,descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        if !Connectivity.isConnectedToInternet{
+            handler(nil,0)
+            return
+        }
         if videoName == "" || videoFileURL?.absoluteString == "" || mimeType == "" || descriptionFieldText == "" {
             handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
             return
@@ -133,6 +147,10 @@ public class UploadPostManager:NSObject{
             }
         }}
     func uploadTextPost(descriptionFieldText:String,handler:@escaping ((Post?,Int)->())){
+        if !Connectivity.isConnectedToInternet{
+            handler(nil,0)
+            return
+        }
         if descriptionFieldText == ""{
             handler(nil,HttpResponseCodes.SomethingWentWrong.rawValue)
             return
@@ -157,6 +175,10 @@ public class UploadPostManager:NSObject{
     }
     
     func uploadThumbnail(videoFileUrl : URL,uploadedVideoUrl: String,postText:String?,handler:@escaping ((Post?,Int)->())){
+        if !Connectivity.isConnectedToInternet{
+            handler(nil,0)
+            return
+        }
         let mimeType = "png"
         var selectedImage : UIImage?
         var imageName : String?

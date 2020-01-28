@@ -60,34 +60,6 @@ class UploadPostPopupVC: UIViewController {
             uploadAction?.isEnabled = false
         }
     }
-    
-    func imageSelected() {
-//        let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-//        imageViewer.delegate = self
-////        imageViewer.modalPresentationStyle = .fullScreen
-//        let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
-//        navController.modalPresentationStyle = .fullScreen
-//
-//        self.present(navController, animated: true){
-//            if let editedImage = self.info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
-//                imageViewer.imageView.image = editedImage
-//            }else{
-//                imageViewer.imageView.image = self.info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-//            }
-//        }
-    }
-    
-    func videoSelected() {
-//        let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-//        imageViewer.delegate = self
-//        imageViewer.modalPresentationStyle = .fullScreen
-//        let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
-//        navController.modalPresentationStyle = .fullScreen
-//
-//        self.present(navController, animated: true){
-//            imageViewer.imageView.image = UploadPostManager.shared.getVideoThumbnail(filePathLocal: (self.info[UIImagePickerController.InfoKey.mediaURL] as! URL).absoluteString)
-//            }
-    }
 }
 
 extension UploadPostPopupVC:ImagePickerDelegate{
@@ -124,11 +96,9 @@ extension UploadPostPopupVC : UIImagePickerControllerDelegate , UINavigationCont
         self.info = info
         switch mediaType {
         case kUTTypeImage: print("ImageSelected")
-        self.imageSelected()
             self.isVideo = false
             self.isText = false
         case kUTTypeMovie: print("VideoSelected")
-        self.videoSelected()
             self.isText = false
             self.isVideo = true
         default:
