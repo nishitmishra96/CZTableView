@@ -74,11 +74,11 @@ public class BoardPostUITableView: BaseTableView {
             var imageName = ("\((Date().timeIntervalSince1970 * 1000))").replacingOccurrences(of: ".", with: "")
             var mimeType = ""
             var imageDataToBeUploaded = Data()
-
+            
             if let image = (imageURL as? URL){
                 mimeType = image.pathExtension.lowercased()
             }
-
+            
             if mimeType == "png" {
                 imageDataToBeUploaded = (selectedImage?.pngData()!)!;
             } else {
@@ -92,7 +92,7 @@ public class BoardPostUITableView: BaseTableView {
                         if let newPostToShow = newPost{
                             self.controller?.InsertNewRow(withPost:newPostToShow)
                             print("post Sucessfully uploaded")
-
+                            
                         }else{
                             MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
                         }
@@ -108,7 +108,7 @@ public class BoardPostUITableView: BaseTableView {
                             if let newPostToShow = newPost{
                                 self.controller?.InsertNewRow(withPost:newPostToShow)
                                 print("post Sucessfully uploaded")
-
+                                
                             }else{
                                 MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
                             }
@@ -117,7 +117,7 @@ public class BoardPostUITableView: BaseTableView {
                 }
             }
         }
-
+        
     }
     @objc public func addPostbuttonClicked() {
         if UploadPostManager.shared.request != nil{
@@ -132,18 +132,18 @@ public class BoardPostUITableView: BaseTableView {
             let uploadPostVC = Storyboard.home.instanceOf(viewController: UploadPostPopupVC.self)!
             let uploadPopUp = UIAlertController(title: "Add Post", message: "", preferredStyle: .alert)
             let uploadAction = UIAlertAction(title: "Publish", style: .default) { (uploadAction) in
-                if !uploadPostVC.isText{
+                if uploadPostVC.isText{
                     self.uploadPostPopup(info: [:], descriptionText: /uploadPostVC.descriptionField.text, selectedImage: nil, isVideo: false, videoFileUrl: nil, isText: true)
-                }else if !uploadPostVC.isVideo{
-                    self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image)
-                }else{
+                }else if uploadPostVC.isVideo{
                     self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image, isVideo: uploadPostVC.isVideo, videoFileUrl: (uploadPostVC.info[UIImagePickerController.InfoKey.mediaURL] as! NSURL))
+                }else{
+                    self.uploadPostPopup(info: uploadPostVC.info, descriptionText: /uploadPostVC.descriptionField.text, selectedImage: uploadPostVC.descriptionImage.image)
                 }
             }
             uploadAction.isEnabled = false
             uploadPostVC.uploadAction = uploadAction
             let cancelAction = UIAlertAction(title: "Cancel", style: .destructive){ _ in
-
+                
             }
             uploadPopUp.addAction(uploadAction)
             uploadPopUp.addAction(cancelAction)
@@ -154,6 +154,6 @@ public class BoardPostUITableView: BaseTableView {
             uploadPopUp.modalPresentationStyle = .overFullScreen
             UIApplication.shared.keyWindow?.rootViewController?.present(uploadPopUp, animated: true, completion: nil)
         }
-
+        
     }
 }

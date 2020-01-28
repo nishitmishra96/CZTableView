@@ -24,7 +24,7 @@ class UploadPostPopupVC: UIViewController {
     var uploadAction : UIAlertAction?
     var info : [UIImagePickerController.InfoKey : Any] = [:]
     var isVideo = false
-    var isText = false
+    var isText = true
     
     @IBAction func GalleryButtonPressed(_ sender: Any) {
         GalleryImagePicker().openAlbums(currentlyPresentedVC:self)
@@ -62,6 +62,7 @@ class UploadPostPopupVC: UIViewController {
         imageViewer.delegate = self
         imageViewer.modalPresentationStyle = .fullScreen
         self.isVideo = false
+        self.isText = false
         self.present(imageViewer, animated: true){
             if let editedImage = self.info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
                 imageViewer.imageView.image = editedImage
@@ -75,6 +76,7 @@ class UploadPostPopupVC: UIViewController {
         let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
         imageViewer.delegate = self
         imageViewer.modalPresentationStyle = .fullScreen
+        self.isText = false
         self.isVideo = true
         self.present(imageViewer, animated: true){
             imageViewer.imageView.image = UploadPostManager.shared.getVideoThumbnail(filePathLocal: (self.info[UIImagePickerController.InfoKey.mediaURL] as! URL).absoluteString)
@@ -111,7 +113,8 @@ extension UploadPostPopupVC:ImagePickerDelegate{
     }
     
     func imagePickerDissmissed() {
-        
+        self.isText = true
+        self.isVideo = false
     }
     
 }
@@ -125,7 +128,6 @@ extension UploadPostPopupVC : UIImagePickerControllerDelegate , UINavigationCont
         print("Hey this is info : ",info)
         let mediaType = info[UIImagePickerController.InfoKey.mediaType] as! CFString
         self.info = info
-        self.isText = true
         switch mediaType {
         case kUTTypeImage: print("ImageSelected")
         self.imageSelected()
