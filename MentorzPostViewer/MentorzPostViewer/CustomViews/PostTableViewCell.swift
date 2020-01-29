@@ -222,10 +222,9 @@ class PostTableViewCell: UITableViewCell {
         }
     }
     func setProfieImage(completePost:CompletePost){
-        completePost.getProfileImage { (urlString,statusCode) in
-            if statusCode == HttpResponseCodes.success.rawValue{
-                var str = urlString?.stringByAddingPercentEncodingForRFC3986()
-                self.profileImage.moa.url = str
+        completePost.getProfileImage { (image) in
+            if let image = image{
+                self.profileImage.image = image
             }else{
                 self.profileImage.image = UIImage(named:"default_avt_square")
             }

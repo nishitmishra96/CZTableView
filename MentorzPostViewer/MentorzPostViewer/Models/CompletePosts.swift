@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDWebImage
 class CompletePost:NSObject{
     var post:Post?
     var comments : [CompleteComment]? = []
@@ -24,9 +25,12 @@ class CompletePost:NSObject{
             handler(rating?.rating,statusCode)
         }
     }
-    func getProfileImage(handler:@escaping ((String?,Int?)->())){
+    func getProfileImage(handler:@escaping ((UIImage?)->())){
         PostsRestManager.shared.getProfileImageWith(userId: "\(/post?.userId)") { (profileImage, statusCode) in
-            handler(profileImage?.hresId,statusCode)
+//            handler(profileImage?.hresId,statusCode)
+            SDWebImageManager.shared.loadImage(with: URL(string: /profileImage?.lresId?.stringByAddingPercentEncodingForRFC3986()), options: .continueInBackground, progress: nil) { (image, data, error, cache, download, url) in
+                handler(image)
+            }
         }
     }
     func getURLEmbeddedInPost() -> NSTextCheckingResult?{
