@@ -224,7 +224,8 @@ class PostTableViewCell: UITableViewCell {
     func setProfieImage(completePost:CompletePost){
         completePost.getProfileImage { (urlString,statusCode) in
             if statusCode == HttpResponseCodes.success.rawValue{
-                self.profileImage.moa.url = urlString
+                var str = urlString?.stringByAddingPercentEncodingForRFC3986()
+                self.profileImage.moa.url = str
             }else{
                 self.profileImage.image = UIImage(named:"default_avt_square")
             }
@@ -318,14 +319,18 @@ class PostTableViewCell: UITableViewCell {
             if completePost?.post?.liked ?? false{
                 self.clickedLikeWhenAlreadyLiked()
                 self.completePost?.unLikePost(handler: { (done) in
-                    if !done{
+                    if done{
+                        MentorzPostViewer.shared.userActivitiesDelegate?.trackUnlikeEvent(postId: "\(/self.completePost?.post?.postId)")
+                    }else{
                         self.clickedLikeWhenAleadyDisliked()
                     }
                 })
             }else{
                 self.clickedLikeWhenAleadyDisliked()
                 self.completePost?.likedPost(handler: { (done) in
-                    if !done{
+                    if done{
+                        MentorzPostViewer.shared.userActivitiesDelegate?.trackLikeEvent(postId: "\(/self.completePost?.post?.postId)")
+                    }else{
                         self.clickedLikeWhenAlreadyLiked()
                     }
                 })
@@ -398,36 +403,13 @@ class PostTableViewCell: UITableViewCell {
                 if result{
                 self.shareCount.text = (/self.completePost?.post?.shareCount > 1) ? "\(/self.completePost?.post?.shareCount) shares":"\(/self.completePost?.post?.shareCount) share"
                 }
-                MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
+//                MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
                     PostsRestManager.shared.sharePost(postId: "\(/self.completePost?.post?.postId)") { (statusCode) in
                         MentorzPostViewer.shared.userActivitiesDelegate?.trackShareEvent(pstId: "\(self.completePost?.post?.postId)", withActivityType: activityType!.rawValue)
                 }
             })
         }
     }
-    
-//    func sharePost(){
-//        let caption:NSString = self.postText?.text as! NSString
-//        let url = NSURL(string: "google.com")!
-//        let objectstoshare = [caption,url]
-//        let controller = UIActivityViewController(activityItems: objectstoshare, applicationActivities: nil)
-//        controller.excludedActivityTypes = [UIActivity.ActivityType.postToWeibo,
-//                                            UIActivity.ActivityType.print, UIActivity.ActivityType.copyToPasteboard,
-//                                            UIActivity.ActivityType.assignToContact, UIActivity.ActivityType.saveToCameraRoll,
-//                                            UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.postToFlickr,
-//                                            UIActivity.ActivityType.postToVimeo, UIActivity.ActivityType.postToTencentWeibo,UIActivity.ActivityType.airDrop]
-//        controller.setValue(caption, forKey: "Subject")
-//        controller.completionWithItemsHandler = {(activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
-//            if !completed {
-//                // User canceled
-//                return
-//            }else{
-//
-//            }
-//        }
-//        UIApplication.shared.keyWindow?.rootViewController?.present(controller, animated: true, completion: nil)
-//
-//    }
 }
 
 extension PostTableViewCell:ExpandableLabelDelegate{
@@ -458,6 +440,6 @@ extension PostTableViewCell:ExpandableLabelDelegate{
         }
         }
     }
-    
-    
+
 }
+

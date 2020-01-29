@@ -21,6 +21,11 @@ public class BoardPostUITableView: BaseTableView {
         super.awakeFromNib()
     }
     
+    
+    @objc public  func resetProfileImage(){
+        PostsRestManager.shared.cache.removeObject(forKey: /MentorzPostViewer.shared.dataSource?.getUserId() as NSString)
+        self.didPullToRefresh()
+    }
     @objc override func didPullToRefresh(){
         self.refreshControl?.beginRefreshing()
         self.controller?.filterPostString = ""
@@ -65,13 +70,14 @@ public class BoardPostUITableView: BaseTableView {
                 UploadPostManager.shared.uploadCompleted?()
                 if statusCode == HttpResponseCodes.success.rawValue{
                     if let newPostToShow = newPost{
+                        MentorzPostViewer.shared.userActivitiesDelegate?.trackNewPostUploadEvent()
                         self.controller?.InsertNewRow(withPost:newPostToShow)
-                    }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
-                        self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                     }else{
                         MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
                         self.showAlertMessageWith(title: "Warning", message: "Upload Failure")
                     }
+                }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
+                    self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                 }
             }
         }else{
@@ -97,13 +103,13 @@ public class BoardPostUITableView: BaseTableView {
                         if let newPostToShow = newPost{
                             self.controller?.InsertNewRow(withPost:newPostToShow)
                             print("post Sucessfully uploaded")
-                            
-                        }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
-                            self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
+                            MentorzPostViewer.shared.userActivitiesDelegate?.trackNewPostUploadEvent()
                         }else{
                             MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
                             self.showAlertMessageWith(title: "Warning", message: "Upload Failure")
                         }
+                    }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
+                        self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                     }
                 }
             }else{
@@ -116,13 +122,13 @@ public class BoardPostUITableView: BaseTableView {
                             if let newPostToShow = newPost{
                                 self.controller?.InsertNewRow(withPost:newPostToShow)
                                 print("post Sucessfully uploaded")
-                                
-                            }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
-                                self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
+                                MentorzPostViewer.shared.userActivitiesDelegate?.trackNewPostUploadEvent()
                             }else{
                                 MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong")
                                 self.showAlertMessageWith(title: "Warning", message: "Upload Failure")
                             }
+                        }else if statusCode == HttpResponseCodes.NoInternet.rawValue{
+                            self.showAlertMessageWith(title: "Warning", message: "Please Connect to Internet")
                         }
                     }
                 }
@@ -171,4 +177,5 @@ public class BoardPostUITableView: BaseTableView {
         }
         
     }
+
 }

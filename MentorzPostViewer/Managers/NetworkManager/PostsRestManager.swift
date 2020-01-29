@@ -242,7 +242,7 @@ class PostsRestManager:NSObject{
                 }
             case .failure(let error):
                 MentorzPostViewer.shared.delegate?.handleUnsportedStatusCode(statusCode: /response.error?.response?.statusCode)
-                
+
                 handler(nil,error.response?.statusCode)
             }
         }

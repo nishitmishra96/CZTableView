@@ -24,6 +24,10 @@ import UIKit
     @objc func profileImageClicked(userId:String!,username:String!)
     @objc func askShareOnFacebook(postText:String!,url:String!)
     @objc func trackShareEvent(pstId:String,withActivityType:String)
+    @objc func trackNewPostUploadEvent()
+    @objc func trackLikeEvent(postId:String)
+    @objc func trackUnlikeEvent(postId:String)
+    @objc func trackViewEvent(postId:String)
 }
 @objc public  class MentorzPostViewer: NSObject {
     @objc public static var shared = MentorzPostViewer()

@@ -122,7 +122,8 @@ class PostController: NSObject,RegularPostController {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if UploadPostManager.shared.request == nil && indexPath.section == 1{
             PostsRestManager.shared.updatePostViewCount(userId: /MentorzPostViewer.shared.dataSource?.getUserId(), postId: "\(String(describing: /self.postToShowOnUI[indexPath.row].post?.postId))") { (statusCode) in
-                if statusCode == HttpResponseCodes.NotFound.rawValue{
+                if statusCode == HttpResponseCodes.NoContent.rawValue{
+                    MentorzPostViewer.shared.userActivitiesDelegate?.trackViewEvent(postId: "\( /self.postToShowOnUI[indexPath.row].post?.postId)")
                     self.postToShowOnUI[indexPath.row].post?.viewCount = (self.postToShowOnUI[indexPath.row].post?.viewCount ?? 0) + 1
                     (cell as! PostTableViewCell).viewCount.text = (/self.postToShowOnUI[indexPath.row].post?.viewCount > 1) ? "\(/self.postToShowOnUI[indexPath.row].post?.viewCount) views " : "\(/self.postToShowOnUI[indexPath.row].post?.viewCount) view"
                     print("view count increased")
