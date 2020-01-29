@@ -59,7 +59,7 @@ class PostController: NSObject,RegularPostController {
         self.tableView?.dataSource = self
         self.tableView?.delegate = self
         self.restDataSource = profileDataSource(userId: userid, otherUserID: otherUserId)
-//        self.getPostOfOtherUser(forPage: 0)
+        self.getPost(forPage: 0)
     }
     init(userid:String,base tableView:BaseTableView){
         self.userID = userid
@@ -166,7 +166,10 @@ extension PostController{
             let str = self.filterPostString
             self.filterPostString = str
             self.tableView?.isLoading = false
-            (self.tableView as? BoardPostUITableView)?.statusCodeDelegate?.didReceiveForTableViewData(with: statusCode)
+            if statusCode == 204 && self.boardPostOriginal.count != 0{
+            }else{
+                (self.tableView as? BoardPostUITableView)?.statusCodeDelegate?.didReceiveForTableViewData(with: statusCode)
+            }
         })
     }
     public func getPostOfOtherUser(forPage:Int){

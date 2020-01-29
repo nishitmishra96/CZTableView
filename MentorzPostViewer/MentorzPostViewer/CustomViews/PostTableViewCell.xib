@@ -126,7 +126,7 @@
                                     <view contentMode="scaleToFill" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Cwe-7U-nXu">
                                         <rect key="frame" x="0.0" y="0.0" width="686" height="102"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IOG-Ba-paV" customClass="ExpandableLabel" customModule="MentorzPostViewer" customModuleProvider="target">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="300" verticalCompressionResistancePriority="1000" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IOG-Ba-paV" customClass="ExpandableLabel" customModule="MentorzPostViewer" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="686" height="102"/>
                                                 <accessibility key="accessibilityConfiguration">
                                                     <accessibilityTraits key="traits" link="YES" staticText="YES"/>
@@ -258,6 +258,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="598" id="9ye-Z4-98P"/>
                                         </constraints>
+                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
                                             <action selector="didTapOnImage:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Bcx-7k-fxo"/>
                                         </connections>

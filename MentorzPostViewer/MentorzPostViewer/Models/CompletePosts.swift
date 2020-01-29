@@ -8,10 +8,11 @@
 
 import Foundation
 import SDWebImage
+import LinkPreviewKit
 class CompletePost:NSObject{
     var post:Post?
     var comments : [CompleteComment]? = []
-    var isUploading = false
+    var isImageFromText = true
     override init(){
         super.init()
     }
@@ -27,7 +28,7 @@ class CompletePost:NSObject{
     }
     func getProfileImage(handler:@escaping ((UIImage?)->())){
         PostsRestManager.shared.getProfileImageWith(userId: "\(/post?.userId)") { (profileImage, statusCode) in
-//            handler(profileImage?.hresId,statusCode)
+            //            handler(profileImage?.hresId,statusCode)
             SDWebImageManager.shared.loadImage(with: URL(string: /profileImage?.lresId?.stringByAddingPercentEncodingForRFC3986()), options: .continueInBackground, progress: nil) { (image, data, error, cache, download, url) in
                 handler(image)
             }
@@ -35,15 +36,15 @@ class CompletePost:NSObject{
     }
     func getURLEmbeddedInPost() -> NSTextCheckingResult?{
         if /post?.content?.hresId?.count <= 2{
-        do{
-            let dataDetector = try NSDataDetector.init(types: NSTextCheckingResult.CheckingType.link.rawValue)
-            let firstMatch = dataDetector.firstMatch(in: /post?.content?.postText, options: [], range: NSRange(location: 0, length: /post?.content!.postText?.utf16.count))
-            return firstMatch
-        }
-        catch {
-            print("No Links")
-        }
-        return nil
+            do{
+                let dataDetector = try NSDataDetector.init(types: NSTextCheckingResult.CheckingType.link.rawValue)
+                let firstMatch = dataDetector.firstMatch(in: /post?.content?.postText, options: [], range: NSRange(location: 0, length: /post?.content!.postText?.utf16.count))
+                return firstMatch
+            }
+            catch {
+                print("No Links")
+            }
+            return nil
         }
         return nil
     }
@@ -65,7 +66,7 @@ class CompletePost:NSObject{
                 handler(false)
                 MentorzPostViewer.shared.delegate?.handleErrorMessage(error: "Something Went Wrong \(statusCode!)")
             }
-
+            
         }
     }
     func sharePost(handler:@escaping ((Bool)->())){
@@ -83,4 +84,20 @@ class CompletePost:NSObject{
         return (/self.post?.name) + (/self.post?.lastName)
     }
     
+    func setURLLinkPreview(url:URL,cellDelegate:PostTableViewCellDelegate?,indexPath:IndexPath){
+        LKLinkPreviewReader.linkPreview(from: url) { (preview,error) in
+            if self.isImageFromText && /self.post?.content?.lresId?.count < 2 &&  /self.post?.content?.hresId?.count < 2{
+                if preview != nil{
+                    if ((preview?.first as! LKLinkPreview).imageURL != nil){
+                        
+                        print("\(self.post?.postId)  preview download Done")
+                        self.post?.content?.lresId = (preview?.first as! LKLinkPreview).imageURL?.absoluteString
+                        self.post?.content?.hresId = (preview?.first as! LKLinkPreview).imageURL?.absoluteString
+                        self.isImageFromText = false
+                        cellDelegate?.reloadTableView(indexPath: indexPath)
+                    }
+                }
+            }
+        }
+    }
 }

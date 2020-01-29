@@ -178,6 +178,18 @@ class PostTableViewCell: UITableViewCell {
         self.commentCount.text = (/completePost?.post?.commentCount > 1) ? "\(/completePost?.post?.commentCount) Comments " : "\(/completePost?.post?.commentCount) Comment"
         self.viewCount.text = (/completePost?.post?.viewCount > 1) ? "\(/completePost?.post?.viewCount) Views " : "\(/completePost?.post?.viewCount) View"
         self.shareCount.text = (/completePost?.post?.shareCount > 1) ? "\(/completePost?.post?.shareCount) Shares":"\(/completePost?.post?.shareCount) Share"
+        
+        if self.completePost?.post?.content?.mediaType == "IMAGE"{
+            self.playButton.setImage(nil, for: .normal)
+        }else if self.completePost?.post?.content?.mediaType == "VIDEO"{
+            self.playButton.setImage(UIImage(named:"play"), for: .normal)
+        }else if self.completePost?.post?.content?.mediaType == "TEXT" && /self.completePost?.post?.content?.hresId?.count < 2{
+            if let imageURL = self.completePost?.getURLEmbeddedInPost()?.url{
+                self.mainPostImage.isHidden = false
+//                self.setURLLinkPreview(url: imageURL)
+                self.completePost?.setURLLinkPreview(url: imageURL, cellDelegate: self.cellDelegate,indexPath:self.indexPath)
+            }
+        }
         if /completePost?.post?.content?.lresId?.count >= 2{
             self.mainPostImage.isHidden = false
             self.playButton.isHidden = false
@@ -189,16 +201,7 @@ class PostTableViewCell: UITableViewCell {
             self.mainPostImage.isHidden = true
             self.playButton.isHidden = true
         }
-        if self.completePost?.post?.content?.mediaType == "IMAGE"{
-            self.playButton.setImage(nil, for: .normal)
-        }else if self.completePost?.post?.content?.mediaType == "VIDEO"{
-            self.playButton.setImage(UIImage(named:"play"), for: .normal)
-        }else if self.completePost?.post?.content?.mediaType == "TEXT" && /self.completePost?.post?.content?.hresId?.count < 2{
-            if let imageURL = self.completePost?.getURLEmbeddedInPost()?.url{
-                self.mainPostImage.isHidden = false
-                self.setURLLinkPreview(url: imageURL)
-            }
-        }
+
         self.timeOfPost.text = dateTimeUtil.getTimeDutation(forPost:"\(/completePost?.post?.shareTime)")
 //        if postText.isTruncated || postText.text == nil{
 //            self.readMore.isHidden = true
@@ -214,6 +217,7 @@ class PostTableViewCell: UITableViewCell {
             LKLinkPreviewReader.linkPreview(from: url) { (preview,error) in
                 if preview != nil{
                     if ((preview?.first as! LKLinkPreview).imageURL != nil){
+                        print("\(self.completePost?.post?.postId)  preview download Done")
                         self.completePost?.post?.content?.lresId = (preview?.first as! LKLinkPreview).imageURL?.absoluteString
                         self.completePost?.post?.content?.hresId = (preview?.first as! LKLinkPreview).imageURL?.absoluteString
                         self.cellDelegate?.reloadTableView(indexPath: self.indexPath)
@@ -288,7 +292,7 @@ class PostTableViewCell: UITableViewCell {
     @IBAction func didTapOnImage(_ sender: UIButton) {
         if self.completePost?.post?.content?.mediaType == "IMAGE"{
             let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-            let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
+            let navController = UINavigationController(rootViewController: imageViewer)
             navController.modalPresentationStyle = .fullScreen
             UIApplication.shared.keyWindow?.rootViewController?.present(navController, animated: true){
                 imageViewer.imageView.image = self.mainPostImage.image
@@ -296,13 +300,15 @@ class PostTableViewCell: UITableViewCell {
 
         }else if self.completePost?.post?.content?.mediaType == "TEXT" {
             let imageViewer = Storyboard.home.instanceOf(viewController: ImageViewerVC.self)!
-            let navController = UINavigationController(rootViewController: imageViewer) // Creating a navigation controller with VC1 at the root of the navigation stack.
+            let navController = UINavigationController(rootViewController: imageViewer)
             navController.modalPresentationStyle = .fullScreen
-            if let _ = self.completePost?.post?.content?.hresId {
-                imageViewer.url = URL(string: completePost?.post?.content?.hresId ?? "")
+//            if let _ = self.completePost?.post?.content?.hresId {
+//                imageViewer.url = URL(string: completePost?.post?.content?.hresId ?? "")
+//            }
+//            imageViewer.modalPresentationStyle = .fullScreen
+            UIApplication.shared.keyWindow?.rootViewController?.present(navController, animated: true){
+                imageViewer.imageView.image = self.mainPostImage.image
             }
-            imageViewer.modalPresentationStyle = .fullScreen
-            UIApplication.shared.keyWindow?.rootViewController?.present(navController, animated: true, completion: nil)
         }else if self.completePost?.post?.content?.mediaType == "VIDEO"{
             let videoURL = URL(string: completePost?.post?.content?.hresId ?? "")
             let player = AVPlayer(url: videoURL!)
